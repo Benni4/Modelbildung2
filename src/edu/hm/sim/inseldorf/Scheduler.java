@@ -1,8 +1,13 @@
 package edu.hm.sim.inseldorf;
 
 public class Scheduler {
-	public boolean dosmth(){
-		return true;
+	private Queue queue;
+	
+	public Scheduler(Queue queue) {
+		this.queue = queue;
 	}
 
+	public void clientArrive(Client client) {
+		this.queue.push(client);
+	}
 }
