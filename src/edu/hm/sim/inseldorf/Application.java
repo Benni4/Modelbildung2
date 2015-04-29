@@ -1,45 +1,46 @@
 package edu.hm.sim.inseldorf;
 
+import java.awt.Color;
+import java.awt.ComponentOrientation;
+import java.awt.Composite;
+import java.awt.Cursor;
 import java.awt.EventQueue;
-
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.ProgressIndicator;
-
-import javax.swing.JFrame;
-
-import java.awt.CardLayout;
-
-import javax.swing.JPanel;
-import javax.swing.JToolBar;
-
-import java.awt.Component;
-import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
 import java.awt.GridLayout;
-import java.time.Clock;
+import java.awt.Image;
+import java.awt.Paint;
+import java.awt.Panel;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.Shape;
+import java.awt.Stroke;
+import java.awt.RenderingHints.Key;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.font.FontRenderContext;
+import java.awt.font.GlyphVector;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.ImageObserver;
+import java.awt.image.RenderedImage;
+import java.awt.image.renderable.RenderableImage;
 
-import javax.swing.Box;
-import javax.swing.JEditorPane;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenuBar;
+import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
 
-import java.awt.event.ContainerAdapter;
-import java.awt.event.ContainerEvent;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.Dimension;
-import java.awt.ComponentOrientation;
-import java.awt.Cursor;
-import java.awt.Font;
-import java.awt.Color;
-import javax.swing.JLabel;
-import javax.swing.JSlider;
-import javax.swing.JComboBox;
-import javax.swing.JButton;
-import javax.swing.JSeparator;
-import java.awt.Button;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import javax.swing.ImageIcon;
+import java.awt.Canvas;
+import java.text.AttributedCharacterIterator;
+import java.util.Map;
 
 public class Application {
 
@@ -48,7 +49,21 @@ public class Application {
 	private JProgressBar progressBar_1;
 	private JLabel lblSever;
 	private JLabel lblNewLabel;
-	private JSlider slider;
+	private JPanel panel;
+	private Canvas canvas;
+	private Graphics2D g2D;
+	
+	private int xClientsPosition = 0;
+	private int yClientsPosition = 0;
+	
+	private double stepwidthY;
+	private double stepwidthX ;
+	private double lengthX;
+	private double lengthY ;
+	
+	public static int n = 10;
+	
+	private int currentDrawedClients;
 
 	/**
 	 * Launch the application.
@@ -74,6 +89,7 @@ public class Application {
 	 * Create the application.
 	 */
 	public Application() {
+		
 		initialize();
 		updateProgressBar();
 		
@@ -84,53 +100,108 @@ public class Application {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 762, 611);
+		frame.setBounds(100, 100, 1146, 611);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
+		panel = new JPanel();
+		panel.setBounds(197, 362, 507, 196);
+		frame.getContentPane().add(panel);
+		panel.setLayout(null);
+		
 		lblNewLabel = new JLabel("Queue");
+		lblNewLabel.setBounds(55, 13, 161, 44);
+		panel.add(lblNewLabel);
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setBounds(59, 251, 200, 50);
-		frame.getContentPane().add(lblNewLabel);
-		
-		progressBar= new JProgressBar();
-		progressBar.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		progressBar.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-		progressBar.setStringPainted(true);
-		progressBar.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-		progressBar.setBounds(59, 318, 268, 86);
-		frame.getContentPane().add(progressBar );
 		
 		lblSever = new JLabel("Server");
+		lblSever.setBounds(383, 7, 45, 20);
+		panel.add(lblSever);
 		lblSever.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSever.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		lblSever.setHorizontalTextPosition(SwingConstants.CENTER);
-		lblSever.setBounds(392, 161, 200, 78);
-		frame.getContentPane().add(lblSever);
 		
 		progressBar_1 = new JProgressBar();
+		progressBar_1.setBounds(345, 34, 126, 146);
+		panel.add(progressBar_1);
 		progressBar_1.setBackground(Color.ORANGE);
 		progressBar_1.setForeground(Color.RED);
 		progressBar_1.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		progressBar_1.setMaximum(4);
 		progressBar_1.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		progressBar_1.setOrientation(SwingConstants.VERTICAL);
-		progressBar_1.setBounds(392, 251, 202, 192);
-		frame.getContentPane().add(progressBar_1);
 		
-		slider = new JSlider();
-		slider.setBounds(392, 95, 200, 50);
-		frame.getContentPane().add(slider);
+		progressBar= new JProgressBar();
+		progressBar.setBounds(548, 51, 283, 69);
+		frame.getContentPane().add(progressBar);
+		progressBar.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		progressBar.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+		progressBar.setStringPainted(true);
+		progressBar.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+		
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.setBounds(99, 16, 150, 40);
+		frame.getContentPane().add(menuBar);
 		
 		JButton btnNewButton = new JButton("Play");
-		btnNewButton.setIcon(new ImageIcon("C:\\Users\\Stefan\\git\\REPO\\Modelbildung2\\resources\\Step-Forward-Pressed-icon.png"));
-		btnNewButton.setBounds(102, 20, 150, 133);
-		frame.getContentPane().add(btnNewButton);
+		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		menuBar.add(btnNewButton);
 		
-		JLabel lblNewLabel_1 = new JLabel("Simulation Time Factor");
-		lblNewLabel_1.setBounds(392, 29, 200, 50);
-		frame.getContentPane().add(lblNewLabel_1);
+		JButton btnNewButton_1 = new JButton("Reset");
+		btnNewButton_1.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		menuBar.add(btnNewButton_1);
+		
+		
+		
+		canvas = new Canvas() {
+			private static final long serialVersionUID = 1L;
+			
+			@Override
+			public void paint(Graphics g){
+				
+				 
+				// value of current amount of clients in queue from scheduler
+				final int valueClients  =2;
+				
+				
+				int toDrawOrDeleteClients  = currentDrawedClients - valueClients;
+				
+				if(toDrawOrDeleteClients > 0){
+					for(int i = 0; i <toDrawOrDeleteClients;i++){
+						g.drawOval(xClientsPosition, yClientsPosition, 10, 10);
+						
+						
+					}
+					
+				}
+				else if (toDrawOrDeleteClients <0 ){
+					
+				}
+				
+				
+				
+				
+			}
+			
+		};
+		canvas.setBounds(99, 125, 223, 231);
+		
+		Rectangle bounds = canvas.getBounds();
+		lengthX = bounds.getWidth()-bounds.getX();
+		lengthY = bounds.getHeight()-bounds.getY();
+		
+		stepwidthX = lengthX/n;
+		stepwidthY = lengthY/n;
+		
+		xClientsPosition = (int) (bounds.getWidth()+ bounds.getX()-stepwidthX/2);
+		yClientsPosition = (int) (bounds.getY() - stepwidthY/2);
+		
+		frame.getContentPane().add(canvas);
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
 	}
 	
 	private void updateProgressBar(){
@@ -164,4 +235,29 @@ public class Application {
 
 		
 	}
-}
+	
+	
+	private void drawClient(){
+		
+		
+	
+
+		Thread thread = new Thread(){
+			public void run(){while(true){
+				
+				canvas.repaint();
+				
+				
+				
+				
+				
+			}
+				
+				
+			}};
+			}
+		
+		
+		
+	}
+
