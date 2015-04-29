@@ -1,5 +1,9 @@
 package edu.hm.sim.inseldorf;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.Random;
 /**
  * Die Klasse erzeugt exponentialverteilte Zufallszahl.
@@ -12,12 +16,23 @@ public class ExponentialNumber {
 	 * @param lambda
 	 * @return exponential verteilte Werte.
 	 */
-	public static double expNumber (int lambda){
+	
+	public static double expNumber (double lambda){
 		Random random = new Random();
 		double a = (random.nextDouble());
-		double y = -1/lambda*Math.log(1 - a);
-		return lambda*Math.exp(-1*lambda*y);		
+		double y = (-1/lambda)*Math.log(1 - a);	
+		return y;
 	}
+	public static void write (String s, double[] data) throws IOException{
+		  BufferedWriter outputWriter = null;
+		  outputWriter = new BufferedWriter(new FileWriter(s));
+		  for (int i = 0; i < data.length; i++) {
+			    outputWriter.write(Double.toString(data[i])+",");
+			  }
+		  //outputWriter.write(Arrays.toString(data));
+		  outputWriter.flush();  
+		  outputWriter.close();  
+		}
 }
 	
 	
