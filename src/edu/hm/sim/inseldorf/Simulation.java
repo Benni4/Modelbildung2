@@ -1,22 +1,30 @@
 package edu.hm.sim.inseldorf;
 
-<<<<<<< Updated upstream
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Simulation extends Thread {
-	private double currentTime;
+	public static final int ZERO = 0;
+	
 	public int id;
+	private double currentTime;
+	private ConcurrentLinkedQueue<Client> queue;
 	private Scheduler scheduler;
 	private Server server;
+	private DataCollector collector;
 	private double secondsPerMillisecond;
+	private int lambdaSpawnTime;
+	private int lambdaProcessTime;
 	
-	public Simulation(double secondsPerMillisecond) {
-		currentTime = 0.0;
-		id = 0;
-		ConcurrentLinkedQueue<Client> queue = new ConcurrentLinkedQueue<Client>();
-		scheduler = new Scheduler(this, queue);
-		server = new Server(this, queue);
-		this.secondsPerMillisecond = secondsPerMillisecond;
+	public Simulation(double spm, int lambdaSpawn, int lambdaProcess) {
+		currentTime = ZERO;
+		id = ZERO;
+		queue = new ConcurrentLinkedQueue<Client>();
+		scheduler = new Scheduler(this);
+		server = new Server(this);
+		collector = new DataCollector(this);
+		secondsPerMillisecond = spm;
+	    lambdaSpawnTime = lambdaSpawn;
+		lambdaProcessTime = lambdaProcess;
 	}
 	
 	public void reset(double secondsPerMillisecond) {
@@ -31,12 +39,40 @@ public class Simulation extends Thread {
 		return currentTime;
 	}
 	
+	public void setSecondsPerMillisecond(double s) {
+		secondsPerMillisecond = s;
+	}
+	
+	public void setLambdaSpawnTime(int lambda) {
+		lambdaSpawnTime = lambda;
+	}
+	
+	public void setLambdaProcessTime(int lambda) {
+		lambdaProcessTime = lambda;
+	}
+	
+	public Scheduler getScheduler() {
+		return scheduler;
+	}
+	
+	public Server getServer() {
+		return server;
+	}
+	
+	public ConcurrentLinkedQueue<Client> getQueue() {
+		return queue;
+	}
+	
 	public long nextClient() {
-		return (long) (5.0/secondsPerMillisecond); // TODO distribute
+		double distribution = ExponentialNumber.expNumber(lambdaSpawnTime);
+		collector.collect(DataCollector.Type.SPAWN, distribution);
+		return (long) (distribution/secondsPerMillisecond);
 	}
 
 	public long processClient() {
-		return (long) (5.0/secondsPerMillisecond); // TODO distribute
+		double distribution = ExponentialNumber.expNumber(lambdaProcessTime);
+		collector.collect(DataCollector.Type.PROCESS, distribution);
+		return (long) (distribution/secondsPerMillisecond);
 	}
 	
 	@Override
@@ -53,14 +89,5 @@ public class Simulation extends Thread {
 			server.interrupt();
 			scheduler.interrupt();
 		}
-=======
-public class Simulation {
-	public static Scheduler scheduler;
-	public static DataCollector collector;
-	public static Server server;
-	public static Queue queue;
-	public static void main(String...args) {
-		// main simulation	
->>>>>>> Stashed changes
 	}
 }

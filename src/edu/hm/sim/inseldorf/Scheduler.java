@@ -6,9 +6,9 @@ public class Scheduler extends Thread {
 	private ConcurrentLinkedQueue<Client> queue;
 	private Simulation simulation;
 	
-	public Scheduler(Simulation sim, ConcurrentLinkedQueue<Client> queue) {
-		this.queue = queue;
+	public Scheduler(Simulation sim) {
 		simulation = sim;
+		queue = sim.getQueue();
 	}
 	
 	@Override
