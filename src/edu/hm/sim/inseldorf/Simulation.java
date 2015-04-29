@@ -1,5 +1,6 @@
 package edu.hm.sim.inseldorf;
 
+<<<<<<< Updated upstream
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Simulation extends Thread {
@@ -52,5 +53,14 @@ public class Simulation extends Thread {
 			server.interrupt();
 			scheduler.interrupt();
 		}
+=======
+public class Simulation {
+	public static Scheduler scheduler;
+	public static DataCollector collector;
+	public static Server server;
+	public static Queue queue;
+	public static void main(String...args) {
+		// main simulation	
+>>>>>>> Stashed changes
 	}
 }
