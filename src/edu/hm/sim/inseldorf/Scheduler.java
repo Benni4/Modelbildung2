@@ -15,10 +15,8 @@ public class Scheduler extends Thread {
 	public void run() {
 		try {
 			for(; true; simulation.id++) {
-				// generate new spawn time
-				double spawnTime = simulation.step();
-				// wait for spawn time
-				Thread.sleep((long)spawnTime);
+				// wait for next client
+				Thread.sleep(simulation.nextClient());
 				
 				// generate client
 				Client c = new Client(simulation);

@@ -13,13 +13,19 @@ public class Server extends Thread {
 	
 	@Override
 	public void run() {
-		while(true) {
-			// wait until clients arrive
-			while(queue.isEmpty());
-			Client c = queue.poll();
+		try {
+			while(true) {
+				// wait until clients arrive
+				while(queue.isEmpty());
+				Client c = queue.poll();
+				c.update(simulation, Client.PROCESSING);
+				
+				// work
+				Thread.sleep(simulation.processClient());
+				c.update(simulation, Client.FINISHED);
+			}
+		} catch(InterruptedException e) {
 			
-			// work
-			double workTime = 5; // TODO generate distribution
 		}
 	}
 }

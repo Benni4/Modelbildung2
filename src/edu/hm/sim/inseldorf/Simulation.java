@@ -30,11 +30,12 @@ public class Simulation extends Thread {
 		return currentTime;
 	}
 	
-	public double step() {
-		// generate step time
-		double time = 5.0; // TODO generate distribution here
-		currentTime += time;
-		return time;
+	public long nextClient() {
+		return (long) (5.0/secondsPerMillisecond); // TODO distribute
+	}
+
+	public long processClient() {
+		return (long) (5.0/secondsPerMillisecond); // TODO distribute
 	}
 	
 	@Override

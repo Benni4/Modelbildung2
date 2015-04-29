@@ -12,11 +12,11 @@ public class Client {
 	private int state;
 	
 	public Client(Simulation sim) {
-		timeAtSpawn = sim.time();
+		state = -1;
 		clientNumber = sim.id;
-		state = QUEUEING;
 		timeAtServer = -1;
 		timeAtFinish = -1;
+		update(sim, QUEUEING);
 	}
 	
 	// getters
@@ -33,16 +33,23 @@ public class Client {
 		return timeAtFinish;
 	}
 	
-	// setters
-	public void setServerTime(double t) {
-		timeAtServer = t;
-		state = PROCESSING;
+	public void update(Simulation sim, int state) {
+		if(state > 3 || state <= this.state) return; // restricted update
+		
+		this.state = state;
+		switch(state) {
+			case PROCESSING:
+				timeAtServer = sim.time();
+				break;
+			case FINISHED:
+				timeAtFinish = sim.time();
+				break;
+			default:
+				timeAtSpawn = sim.time();
+				break;
+		}
+		System.out.println("Client " + toString());
 	}
-	public void setFinishTime(double t) {
-		timeAtFinish = t;
-		state = FINISHED;
-	}
-	
 	@Override
 	public String toString() {
 		return clientNumber + ";" + state + ";" + timeAtSpawn + ";" + timeAtServer + ";" + timeAtFinish;

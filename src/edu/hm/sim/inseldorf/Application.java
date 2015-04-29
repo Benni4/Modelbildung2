@@ -1,45 +1,18 @@
 package edu.hm.sim.inseldorf;
 
-import java.awt.EventQueue;
-
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.ProgressIndicator;
-
-import javax.swing.JFrame;
-
-import java.awt.CardLayout;
-
-import javax.swing.JPanel;
-import javax.swing.JToolBar;
-
-import java.awt.Component;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
-import java.time.Clock;
-
-import javax.swing.Box;
-import javax.swing.JEditorPane;
-import javax.swing.JProgressBar;
-import javax.swing.SwingConstants;
-
-import java.awt.event.ContainerAdapter;
-import java.awt.event.ContainerEvent;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.Dimension;
+import java.awt.Color;
 import java.awt.ComponentOrientation;
 import java.awt.Cursor;
+import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.Color;
-import javax.swing.JLabel;
-import javax.swing.JSlider;
-import javax.swing.JComboBox;
-import javax.swing.JButton;
-import javax.swing.JSeparator;
-import java.awt.Button;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JProgressBar;
+import javax.swing.JSlider;
+import javax.swing.SwingConstants;
 
 public class Application {
 
@@ -124,7 +97,7 @@ public class Application {
 		frame.getContentPane().add(slider);
 		
 		JButton btnNewButton = new JButton("Play");
-		btnNewButton.setIcon(new ImageIcon("C:\\Users\\Stefan\\git\\REPO\\Modelbildung2\\resources\\Step-Forward-Pressed-icon.png"));
+		btnNewButton.setIcon(new ImageIcon("resources/Step-Forward-Pressed-icon.png"));
 		btnNewButton.setBounds(102, 20, 150, 133);
 		frame.getContentPane().add(btnNewButton);
 		
