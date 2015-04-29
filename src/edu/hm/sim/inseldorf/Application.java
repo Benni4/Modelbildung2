@@ -7,7 +7,6 @@ import java.awt.Cursor;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,7 +17,15 @@ import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
 public class Application {
 
@@ -29,19 +36,21 @@ public class Application {
 	private JLabel lblNewLabel;
 	private JPanel panel;
 	private Canvas canvas;
-	private Graphics2D g2D;
+
+	private ChartPanel chartPanel;
 
 	private int xClientsPosition = 0;
 	private int yClientsPosition = 0;
 
 	private double stepwidthY;
-	private double stepwidthX ;
+	private double stepwidthX;
 	private double lengthX;
-	private double lengthY ;
+	private double lengthY;
 
 	public static int n = 10;
 
 	private int currentDrawedClients;
+	private JTextField txtMittlereankunftszeitlamba;
 
 	/**
 	 * Launch the application.
@@ -50,6 +59,7 @@ public class Application {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+
 					Application window = new Application();
 					window.frame.setVisible(true);
 
@@ -75,12 +85,12 @@ public class Application {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 1146, 611);
+		frame.setBounds(100, 100, 1267, 611);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
 		panel = new JPanel();
-		panel.setBounds(197, 362, 507, 196);
+		panel.setBounds(45, 329, 507, 196);
 		frame.getContentPane().add(panel);
 		panel.setLayout(null);
 
@@ -104,16 +114,18 @@ public class Application {
 		progressBar_1.setForeground(Color.RED);
 		progressBar_1.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		progressBar_1.setMaximum(4);
-		progressBar_1.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+		progressBar_1
+				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		progressBar_1.setOrientation(SwingConstants.VERTICAL);
 
-		progressBar= new JProgressBar();
-		progressBar.setBounds(548, 51, 283, 69);
-		frame.getContentPane().add(progressBar);
+		progressBar = new JProgressBar();
+		progressBar.setBounds(15, 73, 283, 69);
+		panel.add(progressBar);
 		progressBar.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		progressBar.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		progressBar.setStringPainted(true);
-		progressBar.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+		progressBar
+				.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.setBounds(99, 16, 150, 40);
@@ -127,64 +139,107 @@ public class Application {
 		btnNewButton_1.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		menuBar.add(btnNewButton_1);
 
+		// Warte schlagen visualisierung TODO
 
 		canvas = new Canvas() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void paint(Graphics g){
-
+			public void paint(Graphics g) {
 
 				// value of current amount of clients in queue from scheduler
-				final int valueClients  =2;
+				final int valueClients = 2;
 
+				int toDrawOrDeleteClients = currentDrawedClients - valueClients;
 
-				int toDrawOrDeleteClients  = currentDrawedClients - valueClients;
-
-				if(toDrawOrDeleteClients > 0){
-					for(int i = 0; i <toDrawOrDeleteClients;i++){
+				if (toDrawOrDeleteClients > 0) {
+					for (int i = 0; i < toDrawOrDeleteClients; i++) {
 						g.drawOval(xClientsPosition, yClientsPosition, 10, 10);
-
 
 					}
 
-				}
-				else if (toDrawOrDeleteClients <0 ){
+				} else if (toDrawOrDeleteClients < 0) {
 
 				}
-
-
-
 
 			}
 
 		};
-		canvas.setBounds(99, 125, 223, 231);
+		canvas.setBounds(64, 80, 223, 231);
 
 		Rectangle bounds = canvas.getBounds();
-		lengthX = bounds.getWidth()-bounds.getX();
-		lengthY = bounds.getHeight()-bounds.getY();
+		lengthX = bounds.getWidth() - bounds.getX();
+		lengthY = bounds.getHeight() - bounds.getY();
 
-		stepwidthX = lengthX/n;
-		stepwidthY = lengthY/n;
+		stepwidthX = lengthX / n;
+		stepwidthY = lengthY / n;
 
-		xClientsPosition = (int) (bounds.getWidth()+ bounds.getX()-stepwidthX/2);
-		yClientsPosition = (int) (bounds.getY() - stepwidthY/2);
+		xClientsPosition = (int) (bounds.getWidth() + bounds.getX() - stepwidthX / 2);
+		yClientsPosition = (int) (bounds.getY() - stepwidthY / 2);
 
 		frame.getContentPane().add(canvas);
-		btnNewButton.addActionListener(new ActionListener() {
+
+		//xy plot Chart für visualisierung
+		
+		XYSeriesCollection defaultDataset =new  XYSeriesCollection();
+		
+		chartPanel = new ChartPanel(ChartFactory.createXYLineChart(
+				"1. PLot in Java", "x", "y",defaultDataset,
+				PlotOrientation.VERTICAL, true, true, false)); // (JFreeChart) null
+		chartPanel.setBounds(800, 105, 430, 420);
+		frame.getContentPane().add(chartPanel);
+
+		txtMittlereankunftszeitlamba = new JTextField();
+		txtMittlereankunftszeitlamba
+				.setHorizontalAlignment(SwingConstants.CENTER);
+		txtMittlereankunftszeitlamba.setText("mittlereankunftszeit  (lamba1)");
+		txtMittlereankunftszeitlamba.setBounds(308, 153, 223, 49);
+		frame.getContentPane().add(txtMittlereankunftszeitlamba);
+		txtMittlereankunftszeitlamba.setColumns(10);
+
+		JButton btnMittlereWarteschlagenLnge = new JButton(
+				"Mittlere Warteschlagen L\u00E4nge");
+		btnMittlereWarteschlagenLnge.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+
+				XYSeries xySeries = new XYSeries("xySeries");
+
+				for (int i = 0; i < 100; i++) {
+					xySeries.add(i, i / 2.3);
+				}
+
+				XYSeriesCollection dataset = new XYSeriesCollection();
+				dataset.addSeries(xySeries);
+
+				JFreeChart chart = ChartFactory.createXYLineChart(
+						"1. PLot in Java", "x", "y", dataset,
+						PlotOrientation.VERTICAL, true, true, false);
+
+				chartPanel.setChart(chart);
+
 			}
 		});
+
+		btnMittlereWarteschlagenLnge.setBounds(572, 125, 223, 49);
+		frame.getContentPane().add(btnMittlereWarteschlagenLnge);
+		
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+					//Do nothing
+			}
+		});
+
 	}
 
-	private void updateProgressBar(){
+	private void updateProgressBar() {
+		
+		//TODO Alles verbinden zu einem Thread der sich alle Daten holt 
+		//und dann diese in alle im selben bearbeiten
+		//TODO Nur eine Update Methode
 
-
-
-		Thread thread = new Thread(){
-			public void run(){
-				for(int i  =0 ;i<= 100;i++){
+		Thread thread = new Thread() {
+			public void run() {
+				for (int i = 0; i <= 100; i++) {
 
 					try {
 						this.sleep(100);
@@ -195,43 +250,32 @@ public class Application {
 					progressBar.setValue(i);
 					progressBar.repaint();
 
-
-					progressBar_1.setValue(i%5);
+					progressBar_1.setValue(i % 5);
 					progressBar_1.repaint();
-
 
 				}
 
 			}
-			};
+		};
 
-			thread.start();
-
-
-	}
-
-
-	private void drawClient(){
-
-
-
-
-		Thread thread = new Thread(){
-			public void run(){while(true){
-
-				canvas.repaint();
-
-
-
-
-
-			}
-
-
-			}};
-			}
-
-
+		thread.start();
 
 	}
 
+	private void drawClient() {
+
+		Thread thread = new Thread() {
+			public void run() {
+				while (true) {
+
+					canvas.repaint();
+
+				}
+
+			}
+			
+		};
+		//Start Thread
+	
+	}
+}
