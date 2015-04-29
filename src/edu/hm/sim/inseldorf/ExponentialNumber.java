@@ -23,13 +23,18 @@ public class ExponentialNumber {
 		double y = (-1/lambda)*Math.log(1 - a);	
 		return y;
 	}
+	/**
+	 * Methode um die Funktion mittels Mathematica zu testen.
+	 * @param s = filename.
+	 * @param data, array aus dem die daten gelesen werden.
+	 * @throws IOException.
+	 */
 	public static void write (String s, double[] data) throws IOException{
 		  BufferedWriter outputWriter = null;
 		  outputWriter = new BufferedWriter(new FileWriter(s));
 		  for (int i = 0; i < data.length; i++) {
 			    outputWriter.write(Double.toString(data[i])+",");
 			  }
-		  //outputWriter.write(Arrays.toString(data));
 		  outputWriter.flush();  
 		  outputWriter.close();  
 		}
