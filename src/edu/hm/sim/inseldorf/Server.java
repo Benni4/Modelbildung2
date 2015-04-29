@@ -1,35 +1,25 @@
 package edu.hm.sim.inseldorf;
 
-public class Server implements Runnable {
-	private Queue queue;
-	private boolean busy;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+public class Server extends Thread {
+	private ConcurrentLinkedQueue<Client> queue;
+	private Simulation simulation;
 	
-	public Queue getQueue() {
-		return queue;
-	}
-
-	public void setQueue(Queue queue) {
+	public Server(Simulation sim, ConcurrentLinkedQueue<Client> queue) {
 		this.queue = queue;
-	}
-
-	public boolean isBusy() {
-		return busy;
-	}
-
-	public void setBusy(boolean busy) {
-		this.busy = busy;
-	}
-
-	public Server(Queue queue) {
-		this.queue = queue;
+		simulation = sim;
 	}
 	
 	@Override
 	public void run() {
 		while(true) {
-			// check queue
+			// wait until clients arrive
+			while(queue.isEmpty());
+			Client c = queue.poll();
 			
 			// work
+			double workTime = 5; // TODO generate distribution
 		}
 	}
 }

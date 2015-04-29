@@ -1,5 +1,6 @@
 package edu.hm.sim.inseldorf;
 
-public class DataCollector {
+
+public class DataCollector extends Thread {
 
 }
