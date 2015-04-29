@@ -1,43 +1,16 @@
 package edu.hm.sim.inseldorf;
 
+import java.awt.Canvas;
+import java.awt.Color;
+import java.awt.ComponentOrientation;
 import java.awt.Cursor;
 import java.awt.EventQueue;
 import java.awt.Font;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JProgressBar;
-import javax.swing.JSlider;
-import javax.swing.SwingConstants;
-import java.awt.Composite;
-import java.awt.Cursor;
-import java.awt.EventQueue;
-import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GraphicsConfiguration;
-import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.Paint;
-import java.awt.Panel;
 import java.awt.Rectangle;
-import java.awt.RenderingHints;
-import java.awt.Shape;
-import java.awt.Stroke;
-import java.awt.RenderingHints.Key;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.font.FontRenderContext;
-import java.awt.font.GlyphVector;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
-import java.awt.image.ImageObserver;
-import java.awt.image.RenderedImage;
-import java.awt.image.renderable.RenderableImage;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -46,11 +19,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
-
-import java.awt.Canvas;
-import java.text.AttributedCharacterIterator;
-import java.util.Map;
->>>>>>> gui
 
 public class Application {
 
