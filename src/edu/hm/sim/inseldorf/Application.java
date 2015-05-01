@@ -1,16 +1,50 @@
 package edu.hm.sim.inseldorf;
 
-import java.awt.Canvas;
-import java.awt.Color;
-import java.awt.ComponentOrientation;
 import java.awt.Cursor;
 import java.awt.EventQueue;
 import java.awt.Font;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JProgressBar;
+import javax.swing.JSlider;
+import javax.swing.SwingConstants;
+
+import java.awt.Color;
+import java.awt.ComponentOrientation;
+import java.awt.Composite;
+import java.awt.Cursor;
+import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
+<<<<<<< Updated upstream
 import java.awt.GridLayout;
+=======
+import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
+import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.Paint;
+import java.awt.Panel;
+>>>>>>> Stashed changes
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.Shape;
+import java.awt.Stroke;
+import java.awt.RenderingHints.Key;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.font.FontRenderContext;
+import java.awt.font.GlyphVector;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.ImageObserver;
+import java.awt.image.RenderedImage;
+import java.awt.image.renderable.RenderableImage;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -32,6 +66,10 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+
+import java.awt.Canvas;
+import java.text.AttributedCharacterIterator;
+import java.util.Map;
 
 public class Application {
 
@@ -93,10 +131,8 @@ public class Application {
 	 * Create the application.
 	 */
 	public Application() {
-
 		initialize();
 		updateProgressBar();
-
 	}
 
 	/**
@@ -139,7 +175,12 @@ public class Application {
 		progressBar_1.setOrientation(SwingConstants.VERTICAL);
 
 		progressBar = new JProgressBar();
+<<<<<<< Updated upstream
 		panel.add(progressBar);
+=======
+		progressBar.setBounds(548, 51, 283, 69);
+		frame.getContentPane().add(progressBar);
+>>>>>>> Stashed changes
 		progressBar.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		progressBar.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		progressBar.setStringPainted(true);
@@ -149,8 +190,11 @@ public class Application {
 		label_1 = new JLabel("");
 		panel.add(label_1);
 
+<<<<<<< Updated upstream
 		// Warte schlagen visualisierung TODO
 
+=======
+>>>>>>> Stashed changes
 		canvas = new Canvas() {
 			private static final long serialVersionUID = 1L;
 
@@ -171,12 +215,18 @@ public class Application {
 				} else if (toDrawOrDeleteClients < 0) {
 
 				}
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 			}
-
 		};
+<<<<<<< Updated upstream
 		canvas.setBounds(68, 172, 213, 103);
+=======
+>>>>>>> Stashed changes
 
+		canvas.setBounds(99, 125, 223, 231);
 		Rectangle bounds = canvas.getBounds();
 		lengthX = bounds.getWidth() - bounds.getX();
 		lengthY = bounds.getHeight() - bounds.getY();
@@ -323,6 +373,7 @@ public class Application {
 			}
 		});
 
+<<<<<<< Updated upstream
 		JButton btnMittlereAnzahlVon = new JButton(
 				"mittlere Anzahl von Kunden im Shop");
 		btnMittlereAnzahlVon.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -427,5 +478,36 @@ public class Application {
 		};
 		// Start Thread
 
+=======
+	private void updateProgressBar() {
+		Thread thread = new Thread() {
+			public void run() {
+				for (int i = 0; i <= 100; i++) {
+					try {
+						this.sleep(100);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					progressBar.setValue(i);
+					progressBar.repaint();
+					progressBar_1.setValue(i % 5);
+					progressBar_1.repaint();
+				}
+			}
+		};
+		thread.start();
+	}
+
+	
+	private void drawClient() {
+		Thread thread = new Thread() {
+			public void run() {
+				while (true) {
+					canvas.repaint();
+				}
+			}
+		};
+>>>>>>> Stashed changes
 	}
 }

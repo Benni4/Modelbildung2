@@ -8,18 +8,18 @@ public class DataCollector {
 		public static int PROCESS = 0x1;
 		public static final int _LENGTH = 2;
 	}
-	
+
 	private Simulation simulation;
 	private ArrayList<ArrayList<Object>> collection;
-	
+
 	public DataCollector(Simulation sim) {
 		simulation = sim;
 	}
-	
+
 	public synchronized void collect(int type, Object data) {
-		
+
 	}
-	
+
 	public synchronized ArrayList<Object> get(int type) {
 		return null;
 	}
