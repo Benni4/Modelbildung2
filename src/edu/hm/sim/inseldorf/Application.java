@@ -149,7 +149,7 @@ public class Application {
 		label_1 = new JLabel("");
 		panel.add(label_1);
 
-		// Warte schlagen visualisierung TODO
+		// Warteschlangen visualisierung TODO
 
 		canvas = new Canvas() {
 			private static final long serialVersionUID = 1L;
@@ -189,7 +189,7 @@ public class Application {
 
 		frmInseldorf.getContentPane().add(canvas);
 
-		// xy plot Chart für visualisierung
+		// xy plot Chart fuer visualisierung
 
 		// XYSeriesCollection defaultDataset =new XYSeriesCollection();
 		// ChartFactory.createXYLineChart(
@@ -227,7 +227,7 @@ public class Application {
 		toolBar.add(SliderTool);
 		SliderTool.setLayout(new GridLayout(2, 1, 10, 4));
 
-		JLabel SliderToolLBL = new JLabel("Simulation Time regulator");
+		JLabel SliderToolLBL = new JLabel("Simulation Time Regulator");
 		SliderToolLBL.setForeground(Color.BLUE);
 		SliderToolLBL.setBackground(Color.WHITE);
 		SliderToolLBL.setFont(new Font("Arial Black", Font.PLAIN, 16));
@@ -285,7 +285,7 @@ public class Application {
 		ChartChoosePanel.setLayout(new GridLayout(5, 1, 10, 5));
 
 		JButton btnMittlereWarteschlangenlnge = new JButton(
-				"mittlere Warteschlangenl\u00E4nge");
+				"mittlere Warteschlangenlaenge");
 		btnMittlereWarteschlangenlnge.setForeground(Color.BLUE);
 		ChartChoosePanel.add(btnMittlereWarteschlangenlnge);
 
@@ -302,21 +302,20 @@ public class Application {
 				dataset.addSeries(xySeries);
 
 				JFreeChart chart = ChartFactory.createXYLineChart(
-						"mittlere Warteschlangenlänge", "x", "y", dataset,
+						"mittlere Warteschlangenlaenge", "x", "y", dataset,
 						PlotOrientation.VERTICAL, true, true, false);
 
 				final XYPlot plot = chart.getXYPlot();
 				plot.setBackgroundPaint(Color.lightGray);
-				
 
 				plot.setDomainGridlinePaint(Color.white);
 				plot.setRangeGridlinePaint(Color.white);
-				
 
-//				final XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
-//				renderer.setSeriesLinesVisible(0, false);
-//				renderer.setSeriesShapesVisible(1, false);
-//				plot.setRenderer(renderer);
+				// final XYLineAndShapeRenderer renderer = new
+				// XYLineAndShapeRenderer();
+				// renderer.setSeriesLinesVisible(0, false);
+				// renderer.setSeriesShapesVisible(1, false);
+				// plot.setRenderer(renderer);
 
 				chartPanel.setChart(chart);
 
@@ -325,7 +324,6 @@ public class Application {
 
 		JButton btnMittlereAnzahlVon = new JButton(
 				"mittlere Anzahl von Kunden im Shop");
-		btnMittlereAnzahlVon.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnMittlereAnzahlVon.setForeground(Color.BLUE);
 		ChartChoosePanel.add(btnMittlereAnzahlVon);
 
