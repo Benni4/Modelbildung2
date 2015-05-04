@@ -59,6 +59,10 @@ public class Simulation extends Thread {
 		return server;
 	}
 	
+	public DataCollector getCollector() {
+		return collector;
+	}
+	
 	public ConcurrentLinkedQueue<Client> getQueue() {
 		return queue;
 	}

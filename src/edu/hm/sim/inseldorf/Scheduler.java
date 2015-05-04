@@ -23,8 +23,6 @@ public class Scheduler extends Thread {
 				
 				// push client to queue
 				queue.offer(c);
-
-				// send information to data collector
 			}
 		} catch(InterruptedException e) {
 			// interrupted!

@@ -48,7 +48,7 @@ public class Client {
 				timeAtSpawn = sim.time();
 				break;
 		}
-		System.out.println("Client " + toString());
+		sim.getCollector().notify(this);
 	}
 	@Override
 	public String toString() {
