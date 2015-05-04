@@ -14,7 +14,7 @@ public class Scheduler extends Thread {
 	@Override
 	public void run() {
 		try {
-			for(; true; simulation.id++) {
+			while(true) {
 				// wait for next client
 				Thread.sleep(simulation.nextClient());
 				

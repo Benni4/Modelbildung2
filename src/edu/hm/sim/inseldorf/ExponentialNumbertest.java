@@ -1,9 +1,6 @@
 package edu.hm.sim.inseldorf;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Arrays;
 
 /**
  * Testklasse
@@ -12,7 +9,6 @@ import java.util.Arrays;
  */
 public class ExponentialNumbertest {
 	public static void main(String[] args) throws IOException {
-		
 		final int  size = 1000;
 		double[] data1 = new double[size];
 		double[] data2 = new double[size];
@@ -22,6 +18,7 @@ public class ExponentialNumbertest {
 		int lambda1 = 100;
 		int lambda2 = 1000;
 		int lambda3 = 20;
+
 		for (int i = 0; i < size; i++){
 			data1[i] = ExponentialNumber.expNumber(lambda1);
 			data2[i] = ExponentialNumber.expNumber(lambda2);

@@ -3,7 +3,6 @@ package edu.hm.sim.inseldorf;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Random;
 /**
  * Die Klasse erzeugt exponentialverteilte Zufallszahl.
@@ -20,7 +19,7 @@ public class ExponentialNumber {
 	public static double expNumber (double lambda){
 		Random random = new Random();
 		double a = (random.nextDouble());
-		double y = (-1/lambda)*Math.log(1 - a);	
+		double y = (-lambda)*Math.log(1 - a);	
 		return y;
 	}
 	/**

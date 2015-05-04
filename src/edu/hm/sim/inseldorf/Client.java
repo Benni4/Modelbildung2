@@ -13,7 +13,7 @@ public class Client {
 	
 	public Client(Simulation sim) {
 		state = -1;
-		clientNumber = sim.id;
+		clientNumber = sim.id++;
 		timeAtServer = -1;
 		timeAtFinish = -1;
 		update(sim, QUEUEING);
@@ -52,6 +52,7 @@ public class Client {
 	}
 	@Override
 	public String toString() {
-		return clientNumber + ";" + state + ";" + timeAtSpawn + ";" + timeAtServer + ";" + timeAtFinish;
+		return clientNumber + ";" + state + ";" + timeAtSpawn + ";" + 
+				timeAtServer + ";" + timeAtFinish;
 	}
 }
