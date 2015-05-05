@@ -6,6 +6,7 @@ public class Simulation extends Thread {
 	public static final int ZERO = 0;
 	
 	public int id;
+	public boolean debug;
 	private double currentTime;
 	private ConcurrentLinkedQueue<Client> queue;
 	private Scheduler scheduler;
@@ -15,7 +16,15 @@ public class Simulation extends Thread {
 	private int lambdaSpawnTime;
 	private int lambdaProcessTime;
 	
+<<<<<<< HEAD
 	public Simulation(double spm, int lambdaSpawn, int lambdaProcess) {
+=======
+	public Simulation(double spm, double lambdaSpawn, double lambdaProcess) {
+		this(spm, lambdaSpawn, lambdaProcess, false);
+	}
+	
+	public Simulation(double spm, double lambdaSpawn, double lambdaProcess, boolean d) {
+>>>>>>> origin/master
 		currentTime = ZERO;
 		id = ZERO;
 		queue = new ConcurrentLinkedQueue<Client>();
@@ -25,14 +34,22 @@ public class Simulation extends Thread {
 		secondsPerMillisecond = spm;
 	    lambdaSpawnTime = lambdaSpawn;
 		lambdaProcessTime = lambdaProcess;
+		debug = d;
 	}
 	
-	public void reset(double secondsPerMillisecond) {
-		this.secondsPerMillisecond = secondsPerMillisecond;
+	public void reset() {
+		pause();
+		currentTime = ZERO;
+		id = ZERO;
+		queue = new ConcurrentLinkedQueue<Client>();
+		scheduler = new Scheduler(this);
+		server = new Server(this);
+		collector = new DataCollector(this);
 	}
 	
 	public void pause() {
-		interrupt();
+		if(!interrupted())
+			interrupt();
 	}
 	
 	public double time() {
