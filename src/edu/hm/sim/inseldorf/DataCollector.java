@@ -22,7 +22,7 @@ public class DataCollector {
 	
 	public synchronized void notify(Client cli) {
 		// currently just print out
-		System.out.println("Client " + toString());
+		System.out.println("Client " + cli.toString() + " in Queue: " + simulation.getQueue().size());
 	}
 	
 	public synchronized ArrayList<Object> get(int type) {

@@ -5,13 +5,14 @@ function TestExpData()
         data = fscanf(fid, '%f,');
         fclose(fid);
         norm = exprnd(lambda,1000,1);
-        disp(data);
-        disp(norm);
 
-        subplot(2,2,id);
+        subplot(3,2,id*2-1);
         probplot('exp',[norm data]);
         legend('norm',sprintf('data%d',id), 'Location','NW');
         title(sprintf('Test #%d exponential distribution',id));
+        subplot(3,2,id*2);
+        histogram(data);
+        title(sprintf('Test #%d histogram',id));
     end
 
     figure();
