@@ -12,10 +12,10 @@ public class Simulation extends Thread {
 	private Server server;
 	private DataCollector collector;
 	private double secondsPerMillisecond;
-	private double lambdaSpawnTime;
-	private double lambdaProcessTime;
+	private int lambdaSpawnTime;
+	private int lambdaProcessTime;
 	
-	public Simulation(double spm, double lambdaSpawn, double lambdaProcess) {
+	public Simulation(double spm, int lambdaSpawn, int lambdaProcess) {
 		currentTime = ZERO;
 		id = ZERO;
 		queue = new ConcurrentLinkedQueue<Client>();

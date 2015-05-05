@@ -11,6 +11,7 @@ import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Hashtable;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -32,7 +33,9 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+
 import javax.swing.SpinnerNumberModel;
+import javax.swing.JSeparator;
 
 public class Application {
 
@@ -71,6 +74,14 @@ public class Application {
 
 	// Console
 	private JTextPane txtpnConsole;
+	
+	
+	//Thread updateRate für GUI
+	private int UpdateRate = 1000;
+	
+	
+	//XY daten für die Plots
+	private XYSeries xySeries;
 
 	/**
 	 * Launch the application.
@@ -96,7 +107,7 @@ public class Application {
 	public Application() {
 
 		initialize();
-		updateProgressBar();
+		updateGUI();
 
 	}
 
@@ -192,11 +203,6 @@ public class Application {
 
 		// xy plot Chart fuer visualisierung
 
-		// XYSeriesCollection defaultDataset =new XYSeriesCollection();
-		// ChartFactory.createXYLineChart(
-		// "1. PLot in Java", "x", "y",defaultDataset,
-		// PlotOrientation.VERTICAL, true, true, false)
-
 		chartPanel = new ChartPanel((JFreeChart) null);
 		chartPanel.setBounds(886, 149, 430, 420);
 
@@ -227,19 +233,40 @@ public class Application {
 		SliderTool.setBackground(Color.WHITE);
 		toolBar.add(SliderTool);
 		SliderTool.setLayout(new GridLayout(2, 1, 10, 4));
+		
+				JLabel SliderToolLBL = new JLabel("Simulation Time Regulator");
+				SliderToolLBL.setForeground(Color.BLUE);
+				SliderToolLBL.setBackground(Color.WHITE);
+				SliderToolLBL.setFont(new Font("Arial Black", Font.PLAIN, 16));
+				SliderToolLBL.setHorizontalAlignment(SwingConstants.CENTER);
+				SliderTool.add(SliderToolLBL);
 
-		JLabel SliderToolLBL = new JLabel("Simulation Time Regulator");
-		SliderToolLBL.setForeground(Color.BLUE);
-		SliderToolLBL.setBackground(Color.WHITE);
-		SliderToolLBL.setFont(new Font("Arial Black", Font.PLAIN, 16));
-		SliderToolLBL.setHorizontalAlignment(SwingConstants.CENTER);
-		SliderTool.add(SliderToolLBL);
-
-		slider = new JSlider();
-		slider.setMinimum(1);
+		slider = new JSlider(SwingConstants.HORIZONTAL,1,100000,1);
+		slider.setSnapToTicks(true);
 		slider.setPaintTicks(true);
+		slider.setMinorTickSpacing(10000);
+		slider.setPaintLabels(true);
+		slider.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		slider.setForeground(Color.BLUE);
 		slider.setBackground(Color.WHITE);
+		
+		Hashtable<Integer, JLabel> labels =
+                new Hashtable<Integer, JLabel>();
+		
+		
+		JLabel sliderLBL = new JLabel("1 \"Echtzeit\"");
+		JLabel sliderLBL2 = new JLabel("100000 mal schneller");
+		sliderLBL.setFont(new Font("Arial Black", Font.PLAIN, 10));
+		sliderLBL2.setFont(new Font("Arial Black", Font.PLAIN, 10));
+		sliderLBL.setForeground(Color.BLUE);
+		sliderLBL2.setForeground(Color.BLUE);
+		
+        labels.put(1,sliderLBL);
+        labels.put(100000, sliderLBL2);
+        
+        
+        
+        slider.setLabelTable(labels);
 		SliderTool.add(slider);
 
 		ParameterPanal = new JPanel();
@@ -254,7 +281,7 @@ public class Application {
 		ParameterPanal.add(txtpnMittlereAnkunftszeit);
 
 		spinner = new JSpinner();
-		spinner.setModel(new SpinnerNumberModel(new Double(1000), null, null, new Double(1)));
+		spinner.setModel(new SpinnerNumberModel(new Integer(1000), null, null, new Integer(1)));
 		ParameterPanal.add(spinner);
 
 		JTextPane txtpnMittlereBedienzeit = new JTextPane();
@@ -265,7 +292,7 @@ public class Application {
 		ParameterPanal.add(txtpnMittlereBedienzeit);
 
 		spinner_1 = new JSpinner();
-		spinner_1.setModel(new SpinnerNumberModel(new Double(100), null, null, new Double(1)));
+		spinner_1.setModel(new SpinnerNumberModel(new Integer(100), null, null, new Integer(1)));
 		ParameterPanal.add(spinner_1);
 
 		JPanel OutputPanel = new JPanel();
@@ -294,8 +321,10 @@ public class Application {
 
 		btnMittlereWarteschlangenlnge.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				
+				String seriesName = "Länge der Schlange zur Zeit";
 
-				XYSeries xySeries = new XYSeries("xySeries");
+				XYSeries xySeries = new XYSeries("seriesName");
 
 				for (int i = 0; i < 100; i++) {
 					xySeries.add(i, i / 2.3);
@@ -303,24 +332,10 @@ public class Application {
 
 				XYSeriesCollection dataset = new XYSeriesCollection();
 				dataset.addSeries(xySeries);
+				
+				String middleQueueLength = "mittlere Warteschlangenlaenge";
 
-				JFreeChart chart = ChartFactory.createXYLineChart(
-						"mittlere Warteschlangenlaenge", "x", "y", dataset,
-						PlotOrientation.VERTICAL, true, true, false);
-
-				final XYPlot plot = chart.getXYPlot();
-				plot.setBackgroundPaint(Color.lightGray);
-
-				plot.setDomainGridlinePaint(Color.white);
-				plot.setRangeGridlinePaint(Color.white);
-
-				// final XYLineAndShapeRenderer renderer = new
-				// XYLineAndShapeRenderer();
-				// renderer.setSeriesLinesVisible(0, false);
-				// renderer.setSeriesShapesVisible(1, false);
-				// plot.setRenderer(renderer);
-
-				chartPanel.setChart(chart);
+				drawPlot(dataset, middleQueueLength);
 
 			}
 		});
@@ -347,15 +362,15 @@ public class Application {
 		// Starting an simulation
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				double spVal =  (double) spinner.getValue();
-				double spVal_1 = (double) spinner_1.getValue();
-				double slVal = (double) slider.getValue();
+				int spVal =  (int) spinner.getValue();
+				int  spVal_1 = (int) spinner_1.getValue();
+				double slVal = (double)( slider.getValue()/1000);
 
 				String message = "";
 
 				if (spVal == 0 || spVal_1 == 0) {
 
-					message = "No allowed arguments\n enter some non zero value";
+					message = "Not allowed arguments\n enter some non zero value";
 
 				} else {
 					message = "Simualtion is running";
@@ -382,7 +397,8 @@ public class Application {
 
 	}
 
-	private void updateProgressBar() {
+	private void updateGUI() {
+		
 
 		// TODO Alles verbinden zu einem Thread der sich alle Daten holt
 		// und dann diese in alle im selben bearbeiten
@@ -390,21 +406,8 @@ public class Application {
 
 		Thread thread = new Thread() {
 			public void run() {
-				for (int i = 0; i <= 100; i++) {
-
-					try {
-						this.sleep(100);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					progressBar.setValue(i);
-					progressBar.repaint();
-
-					progressBar_1.setValue(i % 5);
-					progressBar_1.repaint();
-
-				}
+				
+				
 
 			}
 		};
@@ -429,4 +432,32 @@ public class Application {
 		// Start Thread
 
 	}
+	
+	/**
+	 * Erzeugt den plot für das PlotFeld und setzt ihn anschließend fest
+	 */
+	private void drawPlot(XYSeriesCollection dataset,String plotname){
+		
+		JFreeChart chart = ChartFactory.createXYLineChart(
+				plotname, "x", "y", dataset,
+				PlotOrientation.VERTICAL, true, true, false);
+
+		final XYPlot plot = chart.getXYPlot();
+		plot.setBackgroundPaint(Color.lightGray);
+
+		plot.setDomainGridlinePaint(Color.white);
+		plot.setRangeGridlinePaint(Color.white);
+
+		// final XYLineAndShapeRenderer renderer = new
+		// XYLineAndShapeRenderer();
+		// renderer.setSeriesLinesVisible(0, false);
+		// renderer.setSeriesShapesVisible(1, false);
+		// plot.setRenderer(renderer);
+
+		chartPanel.setChart(chart);
+		
+		
+	}
+	
+	
 }
