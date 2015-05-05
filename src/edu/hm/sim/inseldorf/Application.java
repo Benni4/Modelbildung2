@@ -8,7 +8,6 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Hashtable;
@@ -22,6 +21,7 @@ import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.JTextPane;
 import javax.swing.JToolBar;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
@@ -30,42 +30,29 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-
-import javax.swing.SpinnerNumberModel;
-import javax.swing.JSeparator;
 
 public class Application {
 
 	private JFrame frmInseldorf;
-	private JProgressBar progressBar;
-	private JProgressBar progressBar_1;
+	private JProgressBar ServerAuslastung;
 	private JLabel lblSever;
-	private JLabel lblNewLabel;
-	private JPanel panel;
+	private JLabel lblQueue;
+	private JPanel QueueSeverVisualisation;
+	// Leinwand
 	private Canvas canvas;
+	// anzahl an gezeichneten leuten in schlange
+	private int next = 0;
+	private int current = 0;
 
 	private ChartPanel chartPanel;
 
-	private int xClientsPosition = 0;
-	private int yClientsPosition = 0;
-
-	private double stepwidthY;
-	private double stepwidthX;
-	private double lengthX;
-	private double lengthY;
-
-	public static int n = 10;
-
-	private int currentDrawedClients;
 	private JPanel ParameterPanal;
-	private JLabel label;
-	private JLabel label_1;
 
 	// Simulation
 	private Simulation sim;
+	private boolean running;
 
 	// Parameter Fields for the simulation
 	private JSlider slider;
@@ -74,14 +61,18 @@ public class Application {
 
 	// Console
 	private JTextPane txtpnConsole;
-	
-	
-	//Thread updateRate für GUI
-	private int UpdateRate = 1000;
-	
-	
-	//XY daten für die Plots
+
+	// Thread updateRate fuer GUI
+	private int updateRate = 500;
+
+	// Daten sammler aus dem die Plot daten entnommen werden
+	private DataCollector dataCollector;
+
+	// XY daten für die Plots
 	private XYSeries xySeries;
+
+	// pause und Start button fuer label aktuallisierung
+	private JButton startButton;
 
 	/**
 	 * Launch the application.
@@ -115,51 +106,33 @@ public class Application {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+
 		frmInseldorf = new JFrame();
 		frmInseldorf.setTitle("Inseldorf GUI");
 		frmInseldorf.setBounds(100, 100, 1371, 713);
 		frmInseldorf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmInseldorf.getContentPane().setLayout(null);
 
-		panel = new JPanel();
-		panel.setBounds(45, 329, 507, 196);
-		frmInseldorf.getContentPane().add(panel);
-		panel.setLayout(new GridLayout(0, 2, 0, 0));
+		QueueSeverVisualisation = new JPanel();
+		QueueSeverVisualisation.setBackground(Color.WHITE);
+		QueueSeverVisualisation.setBounds(38, 208, 507, 347);
+		frmInseldorf.getContentPane().add(QueueSeverVisualisation);
+		QueueSeverVisualisation.setLayout(null);
 
-		lblNewLabel = new JLabel("Queue");
-		panel.add(lblNewLabel);
-		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		lblQueue = new JLabel("Queue");
+		lblQueue.setForeground(Color.BLUE);
+		lblQueue.setBounds(7, 7, 242, 93);
+		QueueSeverVisualisation.add(lblQueue);
+		lblQueue.setFont(new Font("Arial Black", Font.PLAIN, 20));
+		lblQueue.setHorizontalAlignment(SwingConstants.CENTER);
 
 		lblSever = new JLabel("Server");
-		panel.add(lblSever);
+		lblSever.setForeground(Color.BLUE);
+		lblSever.setBounds(253, 7, 247, 93);
+		QueueSeverVisualisation.add(lblSever);
 		lblSever.setHorizontalAlignment(SwingConstants.CENTER);
-		lblSever.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lblSever.setFont(new Font("Arial Black", Font.PLAIN, 20));
 		lblSever.setHorizontalTextPosition(SwingConstants.CENTER);
-
-		label = new JLabel("");
-		panel.add(label);
-
-		progressBar_1 = new JProgressBar();
-		panel.add(progressBar_1);
-		progressBar_1.setBackground(Color.ORANGE);
-		progressBar_1.setForeground(Color.RED);
-		progressBar_1.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		progressBar_1.setMaximum(4);
-		progressBar_1
-				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-		progressBar_1.setOrientation(SwingConstants.VERTICAL);
-
-		progressBar = new JProgressBar();
-		panel.add(progressBar);
-		progressBar.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		progressBar.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-		progressBar.setStringPainted(true);
-		progressBar
-				.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-
-		label_1 = new JLabel("");
-		panel.add(label_1);
 
 		// Warteschlangen visualisierung TODO
 
@@ -169,37 +142,71 @@ public class Application {
 			@Override
 			public void paint(Graphics g) {
 
-				// value of current amount of clients in queue from scheduler
-				final int valueClients = 2;
+				int xmax = 300;
+				int ymax = 200;
+				int index = 0;
 
-				int toDrawOrDeleteClients = currentDrawedClients - valueClients;
+				boolean draw = false;
+				int curX = 0;
+				int curY = 0;
 
-				if (toDrawOrDeleteClients > 0) {
-					for (int i = 0; i < toDrawOrDeleteClients; i++) {
-						g.drawOval(xClientsPosition, yClientsPosition, 10, 10);
+				for (int y = 0; y < ymax; y += 10) {
+					for (int x = 0; x < xmax; x += 10) {
+						index++;
+						if (index >= current && index <= next) {
+							if (y % 20 == 10) {
 
+								curX = x;
+								curY = y;
+								draw = true;
+
+							} else {
+
+								curX = xmax - x - 10;
+								curY = y;
+								draw = true;
+
+							}
+						} else if (index >= next && index <= current) {
+							if (y % 2 == 1) {
+								curX = x;
+								curY = y;
+								draw = true;
+
+							} else {
+								curX = xmax - x - 10;
+								curY = y;
+								draw = true;
+
+							}
+						}
+						if (draw) {
+							g.drawRect(curX, curY, 10, 10);
+							g.fillRect(curX, curY, 10, 10);
+							draw = false;
+						}
 					}
 
-				} else if (toDrawOrDeleteClients < 0) {
-
 				}
-
+				current = next;
 			}
-
 		};
-		canvas.setBounds(68, 172, 213, 103);
+		canvas.setBackground(Color.LIGHT_GRAY);
+		canvas.setBounds(7, 104, 300, 200);
+		QueueSeverVisualisation.add(canvas);
 
-		Rectangle bounds = canvas.getBounds();
-		lengthX = bounds.getWidth() - bounds.getX();
-		lengthY = bounds.getHeight() - bounds.getY();
-
-		stepwidthX = lengthX / n;
-		stepwidthY = lengthY / n;
-
-		xClientsPosition = (int) (bounds.getWidth() + bounds.getX() - stepwidthX / 2);
-		yClientsPosition = (int) (bounds.getY() - stepwidthY / 2);
-
-		frmInseldorf.getContentPane().add(canvas);
+		ServerAuslastung = new JProgressBar();
+		ServerAuslastung.setValue(5);
+		ServerAuslastung.setStringPainted(true);
+		ServerAuslastung.setBounds(340, 116, 100, 100);
+		QueueSeverVisualisation.add(ServerAuslastung);
+		ServerAuslastung.setBackground(Color.LIGHT_GRAY);
+		ServerAuslastung.setForeground(Color.RED);
+		ServerAuslastung.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		ServerAuslastung.setMaximum(13);
+		ServerAuslastung
+				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+		ServerAuslastung.setOrientation(SwingConstants.VERTICAL);
 
 		// xy plot Chart fuer visualisierung
 
@@ -216,32 +223,85 @@ public class Application {
 		toolBar.setBounds(0, 0, 1006, 89);
 		frmInseldorf.getContentPane().add(toolBar);
 
-		JButton btnNewButton = new JButton("Play");
-		btnNewButton.setForeground(Color.BLUE);
-		btnNewButton.setBackground(Color.WHITE);
-		toolBar.add(btnNewButton);
-		btnNewButton.setFont(new Font("Arial Black", Font.PLAIN, 20));
+		startButton = new JButton("Start");
+		startButton.setForeground(Color.BLUE);
+		startButton.setBackground(Color.WHITE);
+		toolBar.add(startButton);
+		startButton.setFont(new Font("Arial Black", Font.PLAIN, 20));
 
-		JButton btnNewButton_1 = new JButton("Reset");
-		btnNewButton_1.setForeground(Color.BLUE);
-		btnNewButton_1.setBackground(Color.WHITE);
-		toolBar.add(btnNewButton_1);
-		btnNewButton_1.setFont(new Font("Arial Black", Font.PLAIN, 20));
+		// Starting an simulation
+		startButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				int spVal = (int) spinner.getValue();
+				int spVal_1 = (int) spinner_1.getValue();
+				double slVal = (double) (slider.getValue() / 1000);
+
+				String message = "";
+
+				if (!running) {
+					if (spVal == 0 || spVal_1 == 0) {
+
+						message = "Eingabe von 0 ist nicht erlaubt\n ändern sie bitte die werte";
+
+					}
+
+					message = "Simualtion läuft";
+					sim = new Simulation(slVal, spVal, spVal_1, true);
+					sim.start();
+					dataCollector = sim.getCollector();
+					startButton.setText("Pause");
+					running = true;
+
+				} else {
+					message = "Simualtion pausiert";
+					sim.pause();
+					startButton.setText("Start");
+					running = false;
+
+				}
+
+				System.out.println(message);
+				txtpnConsole.setText(message);
+
+			}
+		});
+
+		JButton resetButton = new JButton("Zurücksetzten");
+		resetButton.setForeground(Color.BLUE);
+		resetButton.setBackground(Color.WHITE);
+		toolBar.add(resetButton);
+		resetButton.setFont(new Font("Arial Black", Font.PLAIN, 20));
+
+		// Zurücksetzten der Simulation
+		resetButton.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent arg0) {
+
+				String message = "Simulation stopped";
+				startButton.setText("Start");
+				running = false;
+
+				sim.reset();
+				txtpnConsole.setText(message);
+				System.out.println(message);
+			}
+
+		});
 
 		JPanel SliderTool = new JPanel();
 		SliderTool.setForeground(Color.WHITE);
 		SliderTool.setBackground(Color.WHITE);
 		toolBar.add(SliderTool);
 		SliderTool.setLayout(new GridLayout(2, 1, 10, 4));
-		
-				JLabel SliderToolLBL = new JLabel("Simulation Time Regulator");
-				SliderToolLBL.setForeground(Color.BLUE);
-				SliderToolLBL.setBackground(Color.WHITE);
-				SliderToolLBL.setFont(new Font("Arial Black", Font.PLAIN, 16));
-				SliderToolLBL.setHorizontalAlignment(SwingConstants.CENTER);
-				SliderTool.add(SliderToolLBL);
 
-		slider = new JSlider(SwingConstants.HORIZONTAL,1,100000,1);
+		JLabel SliderToolLBL = new JLabel("Simulation Time Regulator");
+		SliderToolLBL.setForeground(Color.BLUE);
+		SliderToolLBL.setBackground(Color.WHITE);
+		SliderToolLBL.setFont(new Font("Arial Black", Font.PLAIN, 16));
+		SliderToolLBL.setHorizontalAlignment(SwingConstants.CENTER);
+		SliderTool.add(SliderToolLBL);
+
+		slider = new JSlider(SwingConstants.HORIZONTAL, 1, 100000, 1000);
 		slider.setSnapToTicks(true);
 		slider.setPaintTicks(true);
 		slider.setMinorTickSpacing(10000);
@@ -249,24 +309,20 @@ public class Application {
 		slider.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		slider.setForeground(Color.BLUE);
 		slider.setBackground(Color.WHITE);
-		
-		Hashtable<Integer, JLabel> labels =
-                new Hashtable<Integer, JLabel>();
-		
-		
+
+		Hashtable<Integer, JLabel> labels = new Hashtable<Integer, JLabel>();
+
 		JLabel sliderLBL = new JLabel("1 \"Echtzeit\"");
 		JLabel sliderLBL2 = new JLabel("100000 mal schneller");
 		sliderLBL.setFont(new Font("Arial Black", Font.PLAIN, 10));
 		sliderLBL2.setFont(new Font("Arial Black", Font.PLAIN, 10));
 		sliderLBL.setForeground(Color.BLUE);
 		sliderLBL2.setForeground(Color.BLUE);
-		
-        labels.put(1,sliderLBL);
-        labels.put(100000, sliderLBL2);
-        
-        
-        
-        slider.setLabelTable(labels);
+
+		labels.put(1, sliderLBL);
+		labels.put(100000, sliderLBL2);
+
+		slider.setLabelTable(labels);
 		SliderTool.add(slider);
 
 		ParameterPanal = new JPanel();
@@ -281,7 +337,8 @@ public class Application {
 		ParameterPanal.add(txtpnMittlereAnkunftszeit);
 
 		spinner = new JSpinner();
-		spinner.setModel(new SpinnerNumberModel(new Integer(1000), null, null, new Integer(1)));
+		spinner.setModel(new SpinnerNumberModel(new Integer(1000), null, null,
+				new Integer(1)));
 		ParameterPanal.add(spinner);
 
 		JTextPane txtpnMittlereBedienzeit = new JTextPane();
@@ -292,7 +349,8 @@ public class Application {
 		ParameterPanal.add(txtpnMittlereBedienzeit);
 
 		spinner_1 = new JSpinner();
-		spinner_1.setModel(new SpinnerNumberModel(new Integer(100), null, null, new Integer(1)));
+		spinner_1.setModel(new SpinnerNumberModel(new Integer(100), null, null,
+				new Integer(1)));
 		ParameterPanal.add(spinner_1);
 
 		JPanel OutputPanel = new JPanel();
@@ -321,7 +379,7 @@ public class Application {
 
 		btnMittlereWarteschlangenlnge.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
+
 				String seriesName = "Länge der Schlange zur Zeit";
 
 				XYSeries xySeries = new XYSeries("seriesName");
@@ -332,7 +390,13 @@ public class Application {
 
 				XYSeriesCollection dataset = new XYSeriesCollection();
 				dataset.addSeries(xySeries);
-				
+
+				xySeries = new XYSeries("konstanten plot");
+				xySeries.add(0, 5);
+				xySeries.add(200, 5);
+
+				dataset.addSeries(xySeries);
+
 				String middleQueueLength = "mittlere Warteschlangenlaenge";
 
 				drawPlot(dataset, middleQueueLength);
@@ -359,46 +423,9 @@ public class Application {
 		btnmittlereServerauslastung.setForeground(Color.BLUE);
 		ChartChoosePanel.add(btnmittlereServerauslastung);
 
-		// Starting an simulation
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				int spVal =  (int) spinner.getValue();
-				int  spVal_1 = (int) spinner_1.getValue();
-				double slVal = (double)( slider.getValue()/1000);
-
-				String message = "";
-
-				if (spVal == 0 || spVal_1 == 0) {
-
-					message = "Not allowed arguments\n enter some non zero value";
-
-				} else {
-					message = "Simualtion is running";
-					sim = new Simulation(slVal, spVal, spVal_1);
-					sim.start();
-				}
-
-				System.out.println(message);
-				txtpnConsole.setText(message);
-
-			}
-		});
-
-		btnNewButton_1.addActionListener(new ActionListener() {
-			@SuppressWarnings("deprecation")
-			public void actionPerformed(ActionEvent arg0) {
-
-				String message = "Simulation stopped";
-				sim.interrupt();
-				txtpnConsole.setText(message);
-			}
-
-		});
-
 	}
 
 	private void updateGUI() {
-		
 
 		// TODO Alles verbinden zu einem Thread der sich alle Daten holt
 		// und dann diese in alle im selben bearbeiten
@@ -406,41 +433,40 @@ public class Application {
 
 		Thread thread = new Thread() {
 			public void run() {
-				
-				
 
-			}
-		};
+				for (int i = 0; i < 10; i++) {
 
-		thread.start();
+					try {
+						this.sleep(updateRate);
+						next = i;
+						canvas.repaint();
 
-	}
-
-	private void drawClient() {
-
-		Thread thread = new Thread() {
-			public void run() {
-				while (true) {
-
-					canvas.repaint();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 
 				}
 
 			}
 
 		};
-		// Start Thread
+
+		thread.start();
 
 	}
-	
+
+	private void drawClients(int next) {
+
+	}
+
 	/**
 	 * Erzeugt den plot für das PlotFeld und setzt ihn anschließend fest
 	 */
-	private void drawPlot(XYSeriesCollection dataset,String plotname){
-		
-		JFreeChart chart = ChartFactory.createXYLineChart(
-				plotname, "x", "y", dataset,
-				PlotOrientation.VERTICAL, true, true, false);
+	private void drawPlot(XYSeriesCollection dataset, String plotname) {
+
+		JFreeChart chart = ChartFactory.createXYLineChart(plotname, "x", "y",
+				dataset, PlotOrientation.VERTICAL, true, true, false);
 
 		final XYPlot plot = chart.getXYPlot();
 		plot.setBackgroundPaint(Color.lightGray);
@@ -455,9 +481,7 @@ public class Application {
 		// plot.setRenderer(renderer);
 
 		chartPanel.setChart(chart);
-		
-		
+
 	}
-	
-	
+
 }
