@@ -13,12 +13,14 @@ public class DataCollector {
 	private ArrayList<Client> clients;
 	private ArrayList<Double> spawnTimes;
 	private ArrayList<Double> processTimes;
+	private ArrayList<Integer> queueSizes;
 	
 	public DataCollector(Simulation sim) {
 		simulation = sim;
 		clients = new ArrayList<>();
 		spawnTimes = new ArrayList<>();
 		processTimes = new ArrayList<>();
+		queueSizes = new ArrayList<>();
 	}
 	
 	public synchronized void collect(int type, Object data) {
@@ -30,6 +32,7 @@ public class DataCollector {
 			clients.add((Client) data);
 			// currently just print out
 			System.out.println("Client " + data.toString() + " in Queue: " + simulation.getQueue().size());
+			queueSizes.add(simulation.getQueue().size());
 		}		
 	}
 	
