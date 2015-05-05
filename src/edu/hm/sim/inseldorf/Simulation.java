@@ -16,15 +16,13 @@ public class Simulation extends Thread {
 	private int lambdaSpawnTime;
 	private int lambdaProcessTime;
 	
-<<<<<<< HEAD
+
 	public Simulation(double spm, int lambdaSpawn, int lambdaProcess) {
-=======
-	public Simulation(double spm, double lambdaSpawn, double lambdaProcess) {
 		this(spm, lambdaSpawn, lambdaProcess, false);
 	}
 	
-	public Simulation(double spm, double lambdaSpawn, double lambdaProcess, boolean d) {
->>>>>>> origin/master
+	public Simulation(double spm, int lambdaSpawn, int lambdaProcess, boolean d) {
+
 		currentTime = ZERO;
 		id = ZERO;
 		queue = new ConcurrentLinkedQueue<Client>();
