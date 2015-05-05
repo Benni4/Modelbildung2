@@ -32,6 +32,7 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import javax.swing.SpinnerNumberModel;
 
 public class Application {
 
@@ -253,6 +254,7 @@ public class Application {
 		ParameterPanal.add(txtpnMittlereAnkunftszeit);
 
 		spinner = new JSpinner();
+		spinner.setModel(new SpinnerNumberModel(new Double(1000), null, null, new Double(1)));
 		ParameterPanal.add(spinner);
 
 		JTextPane txtpnMittlereBedienzeit = new JTextPane();
@@ -263,6 +265,7 @@ public class Application {
 		ParameterPanal.add(txtpnMittlereBedienzeit);
 
 		spinner_1 = new JSpinner();
+		spinner_1.setModel(new SpinnerNumberModel(new Double(100), null, null, new Double(1)));
 		ParameterPanal.add(spinner_1);
 
 		JPanel OutputPanel = new JPanel();
@@ -344,8 +347,8 @@ public class Application {
 		// Starting an simulation
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				int spVal = (int) spinner.getValue();
-				int spVal_1 = (int) spinner_1.getValue();
+				double spVal =  (double) spinner.getValue();
+				double spVal_1 = (double) spinner_1.getValue();
 				double slVal = (double) slider.getValue();
 
 				String message = "";
