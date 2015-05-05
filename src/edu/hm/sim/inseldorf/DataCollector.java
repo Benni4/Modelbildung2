@@ -1,5 +1,8 @@
 package edu.hm.sim.inseldorf;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class DataCollector {
@@ -30,13 +33,59 @@ public class DataCollector {
 			spawnTimes.add((double)data);
 		} else { // CLIENT
 			clients.add((Client) data);
-			// currently just print out
-			System.out.println("Client " + data.toString() + " in Queue: " + simulation.getQueue().size());
 			queueSizes.add(simulation.getQueue().size());
+			
+			if(simulation.debug) {
+				System.out.println("Client " + data.toString() + " in Queue: " + simulation.getQueue().size());
+			}
 		}		
 	}
 	
 	public synchronized ArrayList<Object> get(int type) {
 		return null;
+	}
+	
+	public synchronized void print(String path) throws IOException {
+		// files
+		File clientFile = new File(path.replace("/", File.separator) + File.separator + "clients.txt");
+		File spawnFile = new File(path.replace("/", File.separator) + File.separator + "spawn.txt");
+		File processFile = new File(path.replace("/", File.separator) + File.separator + "process.txt");
+		File queueFile = new File(path.replace("/", File.separator) + File.separator + "queue.txt");
+		
+		// client output
+		clientFile.createNewFile();
+		FileWriter writer = new FileWriter(clientFile);
+		for(Client c : clients) {
+			writer.write(c.toString() + "\n");
+		}
+		writer.flush();
+		writer.close();
+	
+		// spawn output
+		spawnFile.createNewFile();
+		writer = new FileWriter(spawnFile);
+		for(double s : spawnTimes) {
+			writer.write(s + "\n");
+		}
+		writer.flush();
+		writer.close();
+		
+		// process output
+		processFile.createNewFile();
+		writer = new FileWriter(processFile);
+		for(double p : processTimes) {
+			writer.write(p + "\n");
+		}
+		writer.flush();
+		writer.close();
+		
+		// queue output
+		queueFile.createNewFile();
+		writer = new FileWriter(queueFile);
+		for(int q : queueSizes) {
+			writer.write(q + "\n");
+		}
+		writer.flush();
+		writer.close();
 	}
 }
