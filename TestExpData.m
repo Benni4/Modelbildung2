@@ -8,7 +8,7 @@ function TestExpData()
 
         subplot(3,2,id*2-1);
         probplot('exp',[norm data]);
-        legend('norm',sprintf('data%d',id), 'Location','NW');
+        legend('exprnd',sprintf('data%d',id), 'Location','NW');
         title(sprintf('Test #%d exponential distribution',id));
         subplot(3,2,id*2);
         histogram(data);

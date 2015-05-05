@@ -15,13 +15,13 @@ public class ExponentialNumber {
 	 * @param lambda
 	 * @return exponential verteilte Werte.
 	 */
-	
 	public static double expNumber (double lambda){
 		Random random = new Random();
 		double a = (random.nextDouble());
 		double y = (-lambda)*Math.log(1 - a);	
 		return y;
 	}
+
 	/**
 	 * Methode um die Funktion mittels Mathematica zu testen.
 	 * @param s = filename.

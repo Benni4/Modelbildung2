@@ -48,7 +48,7 @@ public class Client {
 				timeAtSpawn = sim.time();
 				break;
 		}
-		sim.getCollector().notify(this);
+		sim.getCollector().collect(DataCollector.Type.CLIENT, this);
 	}
 	@Override
 	public String toString() {
