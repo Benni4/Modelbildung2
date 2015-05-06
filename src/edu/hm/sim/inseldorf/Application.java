@@ -304,11 +304,8 @@ public class Application {
 		slider.setMajorTickSpacing(200);
 		slider.setSnapToTicks(true);
 		slider.setPaintTicks(true);
-<<<<<<< Updated upstream
 		slider.setMinorTickSpacing(100);
-=======
 		slider.setMinorTickSpacing(1000);
->>>>>>> Stashed changes
 		slider.setPaintLabels(true);
 		slider.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		slider.setForeground(Color.BLUE);
