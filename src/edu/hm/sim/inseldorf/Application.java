@@ -63,7 +63,7 @@ public class Application {
 	private JTextPane txtpnConsole;
 
 	// Thread updateRate fuer GUI
-	private int updateRate = 500;
+	private int updateRate = 1000;
 
 	// Daten sammler aus dem die Plot daten entnommen werden
 	private DataCollector dataCollector;
@@ -234,7 +234,7 @@ public class Application {
 			public void actionPerformed(ActionEvent arg0) {
 				int spVal = (int) spinner.getValue();
 				int spVal_1 = (int) spinner_1.getValue();
-				double slVal = (double) (slider.getValue() / 1000);
+				double slVal = (double) (slider.getValue());
 
 				String message = "";
 
@@ -301,28 +301,29 @@ public class Application {
 		SliderToolLBL.setHorizontalAlignment(SwingConstants.CENTER);
 		SliderTool.add(SliderToolLBL);
 
-		slider = new JSlider(SwingConstants.HORIZONTAL, 1, 100000, 1000);
+		slider = new JSlider(SwingConstants.HORIZONTAL, 0, 1000, 1);
+		slider.setMajorTickSpacing(200);
 		slider.setSnapToTicks(true);
 		slider.setPaintTicks(true);
-		slider.setMinorTickSpacing(10000);
+		slider.setMinorTickSpacing(100);
 		slider.setPaintLabels(true);
 		slider.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		slider.setForeground(Color.BLUE);
 		slider.setBackground(Color.WHITE);
 
-		Hashtable<Integer, JLabel> labels = new Hashtable<Integer, JLabel>();
-
-		JLabel sliderLBL = new JLabel("1 \"Echtzeit\"");
-		JLabel sliderLBL2 = new JLabel("100000 mal schneller");
-		sliderLBL.setFont(new Font("Arial Black", Font.PLAIN, 10));
-		sliderLBL2.setFont(new Font("Arial Black", Font.PLAIN, 10));
-		sliderLBL.setForeground(Color.BLUE);
-		sliderLBL2.setForeground(Color.BLUE);
-
-		labels.put(1, sliderLBL);
-		labels.put(100000, sliderLBL2);
-
-		slider.setLabelTable(labels);
+//		Hashtable<Integer, JLabel> labels = new Hashtable<Integer, JLabel>();
+//
+//		JLabel sliderLBL = new JLabel("1 \"Echtzeit\"");
+//		JLabel sliderLBL2 = new JLabel("100000 mal schneller");
+//		sliderLBL.setFont(new Font("Arial Black", Font.PLAIN, 10));
+//		sliderLBL2.setFont(new Font("Arial Black", Font.PLAIN, 10));
+//		sliderLBL.setForeground(Color.BLUE);
+//		sliderLBL2.setForeground(Color.BLUE);
+//
+//		labels.put(1, sliderLBL);
+//		labels.put(100000, sliderLBL2);
+//
+//		slider.setLabelTable(labels);
 		SliderTool.add(slider);
 
 		ParameterPanal = new JPanel();
@@ -433,19 +434,31 @@ public class Application {
 
 		Thread thread = new Thread() {
 			public void run() {
+				
+				while(true) {
+					
+					if(sim != null){
+						
+						double slVal = (double) (slider.getValue());					
+						sim.setSecondsPerMillisecond(slVal);
+						
+					}else{
 
-				for (int i = 0; i < 10; i++) {
-
-					try {
-						this.sleep(updateRate);
-						next = i;
-						canvas.repaint();
-
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+//				for (int i = 0; i < 100; i++) {
+//
+//					try {
+//						this.sleep(updateRate);
+//						next = i;
+//						canvas.repaint();
+//
+//					} catch (InterruptedException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//
+//				}
+				
 					}
-
 				}
 
 			}
