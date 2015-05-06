@@ -23,7 +23,7 @@ public class Server extends Thread {
 		try {
 			while(true) {
 				// wait until clients arrive
-				while(queue.isEmpty()) Thread.sleep(0);
+				while(queue.isEmpty()) Thread.sleep(0,1); // just sleep 1 ns
 				Client c = queue.poll();
 				c.update(simulation, Client.PROCESSING);
 				

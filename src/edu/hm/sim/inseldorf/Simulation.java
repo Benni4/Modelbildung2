@@ -100,8 +100,10 @@ public class Simulation extends Thread {
 		scheduler.start();
 		try {
 			while(true) {
-				currentTime += secondsPerMillisecond;
-				Thread.sleep(1);
+				long time = System.nanoTime();
+				Thread.sleep(0,1);
+				time = System.nanoTime() - time;
+				currentTime += secondsPerMillisecond/1000000 * time;
 			}
 		} catch(InterruptedException e) {
 			// paused
