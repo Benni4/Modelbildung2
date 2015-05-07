@@ -10,6 +10,7 @@ import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 import javax.swing.JButton;
@@ -32,6 +33,12 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+
+import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
+
+enum ToPlot {
+	defaultToPlot, mdlQueueLenght, mdlAmountOfCounters, mdlQueueWaitingTime, mdlTimeInShop, mdlServerUtilization
+}
 
 public class Application {
 
@@ -73,6 +80,9 @@ public class Application {
 
 	// pause und Start button fuer label aktuallisierung
 	private JButton startButton;
+
+	private ArrayList<Object> dataList;
+	private ToPlot toPlot = ToPlot.defaultToPlot;
 
 	/**
 	 * Launch the application.
@@ -277,7 +287,7 @@ public class Application {
 
 			public void actionPerformed(ActionEvent arg0) {
 
-				String message = "Simulation stopped";
+				String message = "Simulation stoppte";
 				startButton.setText("Start");
 				running = false;
 
@@ -311,19 +321,19 @@ public class Application {
 		slider.setForeground(Color.BLUE);
 		slider.setBackground(Color.WHITE);
 
-//		Hashtable<Integer, JLabel> labels = new Hashtable<Integer, JLabel>();
-//
-//		JLabel sliderLBL = new JLabel("1 \"Echtzeit\"");
-//		JLabel sliderLBL2 = new JLabel("100000 mal schneller");
-//		sliderLBL.setFont(new Font("Arial Black", Font.PLAIN, 10));
-//		sliderLBL2.setFont(new Font("Arial Black", Font.PLAIN, 10));
-//		sliderLBL.setForeground(Color.BLUE);
-//		sliderLBL2.setForeground(Color.BLUE);
-//
-//		labels.put(1, sliderLBL);
-//		labels.put(100000, sliderLBL2);
-//
-//		slider.setLabelTable(labels);
+		// Hashtable<Integer, JLabel> labels = new Hashtable<Integer, JLabel>();
+		//
+		// JLabel sliderLBL = new JLabel("1 \"Echtzeit\"");
+		// JLabel sliderLBL2 = new JLabel("100000 mal schneller");
+		// sliderLBL.setFont(new Font("Arial Black", Font.PLAIN, 10));
+		// sliderLBL2.setFont(new Font("Arial Black", Font.PLAIN, 10));
+		// sliderLBL.setForeground(Color.BLUE);
+		// sliderLBL2.setForeground(Color.BLUE);
+		//
+		// labels.put(1, sliderLBL);
+		// labels.put(100000, sliderLBL2);
+		//
+		// slider.setLabelTable(labels);
 		SliderTool.add(slider);
 
 		ParameterPanal = new JPanel();
@@ -382,8 +392,9 @@ public class Application {
 			public void actionPerformed(ActionEvent arg0) {
 
 				String seriesName = "Länge der Schlange zur Zeit";
+				toPlot = ToPlot.mdlQueueLenght;
 
-				XYSeries xySeries = new XYSeries("seriesName");
+				xySeries = new XYSeries("seriesName");
 
 				for (int i = 0; i < 100; i++) {
 					xySeries.add(i, i / 2.3);
@@ -434,30 +445,32 @@ public class Application {
 
 		Thread thread = new Thread() {
 			public void run() {
-				
-				while(true) {
-					
-					if(sim != null){
-						
-						double slVal = (double) (slider.getValue());					
-						sim.setSecondsPerMillisecond(slVal);
-						
-					}else{
 
-//				for (int i = 0; i < 100; i++) {
-//
-//					try {
-//						this.sleep(updateRate);
-//						next = i;
-//						canvas.repaint();
-//
-//					} catch (InterruptedException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//
-//				}
-				
+				while (true) {
+
+					if (sim != null) {
+
+						double slVal = (double) (slider.getValue());
+						sim.setSecondsPerMillisecond(slVal);
+
+					} else {
+
+						dataList = dataCollector.get(1);
+
+						// for (int i = 0; i < 100; i++) {
+						//
+						// try {
+						// this.sleep(updateRate);
+						// next = i;
+						// canvas.repaint();
+						//
+						// } catch (InterruptedException e) {
+						// // TODO Auto-generated catch block
+						// e.printStackTrace();
+						// }
+						//
+						// }
+
 					}
 				}
 
@@ -494,6 +507,32 @@ public class Application {
 		// plot.setRenderer(renderer);
 
 		chartPanel.setChart(chart);
+
+	}
+
+	private void updateXY() {
+		
+		
+		switch (toPlot) {
+		case mdlQueueLenght:
+
+			break;
+		case mdlAmountOfCounters:
+
+			break;
+		case mdlQueueWaitingTime:
+
+			break;
+		case mdlTimeInShop:
+
+			break;
+		case mdlServerUtilization:
+
+			break;
+
+		default:
+			break;
+		}
 
 	}
 
