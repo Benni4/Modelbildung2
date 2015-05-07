@@ -75,7 +75,7 @@ public class Application {
 	// Daten sammler aus dem die Plot daten entnommen werden
 	private DataCollector dataCollector;
 
-	// XY daten f¸r die Plots
+	// XY daten f√ºr die Plots
 	private XYSeries xySeries;
 
 	// pause und Start button fuer label aktuallisierung
@@ -196,7 +196,6 @@ public class Application {
 							draw = false;
 						}
 					}
-
 				}
 				current = next;
 			}
@@ -251,11 +250,11 @@ public class Application {
 				if (!running) {
 					if (spVal == 0 || spVal_1 == 0) {
 
-						message = "Eingabe von 0 ist nicht erlaubt\n ‰ndern sie bitte die werte";
+						message = "Eingabe von 0 ist nicht erlaubt\n √§ndern sie bitte die Werte";
 
 					}
 
-					message = "Simualtion l‰uft";
+					message = "Simualtion l√§uft";
 					sim = new Simulation(slVal, spVal, spVal_1, true);
 					sim.start();
 					dataCollector = sim.getCollector();
@@ -276,18 +275,20 @@ public class Application {
 			}
 		});
 
-		JButton resetButton = new JButton("Zur¸cksetzten");
+		JButton resetButton = new JButton("Zur√ºcksetzten");
 		resetButton.setForeground(Color.BLUE);
 		resetButton.setBackground(Color.WHITE);
 		toolBar.add(resetButton);
 		resetButton.setFont(new Font("Arial Black", Font.PLAIN, 20));
 
-		// Zur¸cksetzten der Simulation
+		// Zur√ºcksetzten der Simulation
 		resetButton.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
 
-				String message = "Simulation stoppte";
+
+				String message = "Simulation gestoppt";
+
 				startButton.setText("Start");
 				running = false;
 
@@ -304,7 +305,7 @@ public class Application {
 		toolBar.add(SliderTool);
 		SliderTool.setLayout(new GridLayout(2, 1, 10, 4));
 
-		JLabel SliderToolLBL = new JLabel("Simulation Time Regulator");
+		JLabel SliderToolLBL = new JLabel("Simulations Zeit Regulator");
 		SliderToolLBL.setForeground(Color.BLUE);
 		SliderToolLBL.setBackground(Color.WHITE);
 		SliderToolLBL.setFont(new Font("Arial Black", Font.PLAIN, 16));
@@ -316,6 +317,7 @@ public class Application {
 		slider.setSnapToTicks(true);
 		slider.setPaintTicks(true);
 		slider.setMinorTickSpacing(100);
+		slider.setMinorTickSpacing(1000);
 		slider.setPaintLabels(true);
 		slider.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		slider.setForeground(Color.BLUE);
@@ -384,15 +386,17 @@ public class Application {
 		ChartChoosePanel.setLayout(new GridLayout(5, 1, 10, 5));
 
 		JButton btnMittlereWarteschlangenlnge = new JButton(
-				"mittlere Warteschlangenlaenge");
+				"mittlere Warteschlangenl√§nge");
 		btnMittlereWarteschlangenlnge.setForeground(Color.BLUE);
 		ChartChoosePanel.add(btnMittlereWarteschlangenlnge);
 
 		btnMittlereWarteschlangenlnge.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
-				String seriesName = "L‰nge der Schlange zur Zeit";
+
+				String seriesName = "L√§nge der Schlange zur Zeit";
 				toPlot = ToPlot.mdlQueueLenght;
+
 
 				xySeries = new XYSeries("seriesName");
 
@@ -409,7 +413,7 @@ public class Application {
 
 				dataset.addSeries(xySeries);
 
-				String middleQueueLength = "mittlere Warteschlangenlaenge";
+				String middleQueueLength = "mittlere Warteschlangenl√§nge";
 
 				drawPlot(dataset, middleQueueLength);
 
@@ -487,7 +491,7 @@ public class Application {
 	}
 
 	/**
-	 * Erzeugt den plot f¸r das PlotFeld und setzt ihn anschlieﬂend fest
+	 * Erzeugt den plot f√ºr das PlotFeld und setzt ihn anschlie√üend fest
 	 */
 	private void drawPlot(XYSeriesCollection dataset, String plotname) {
 
