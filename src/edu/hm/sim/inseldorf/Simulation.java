@@ -2,12 +2,11 @@ package edu.hm.sim.inseldorf;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class Simulation extends Thread {
+public class Simulation {
 	public static final int ZERO = 0;
 	
 	public int id;
 	public boolean debug;
-	private double currentTime;
 	private ConcurrentLinkedQueue<Client> queue;
 	private Scheduler scheduler;
 	private Server server;
@@ -22,8 +21,6 @@ public class Simulation extends Thread {
 	}
 	
 	public Simulation(double spm, int lambdaSpawn, int lambdaProcess, boolean d) {
-
-		currentTime = ZERO;
 		id = ZERO;
 		queue = new ConcurrentLinkedQueue<Client>();
 		scheduler = new Scheduler(this);
@@ -37,7 +34,6 @@ public class Simulation extends Thread {
 	
 	public void reset() {
 		pause();
-		currentTime = ZERO;
 		id = ZERO;
 		queue = new ConcurrentLinkedQueue<Client>();
 		scheduler = new Scheduler(this);
@@ -45,13 +41,20 @@ public class Simulation extends Thread {
 		collector = new DataCollector(this);
 	}
 	
-	public void pause() {
-		if(!interrupted())
-			interrupt();
+	public void start() {
+		server.start();
+		scheduler.start();
 	}
 	
-	public double time() {
-		return currentTime;
+	public void pause() {
+		if(!server.isInterrupted())
+			server.interrupt();
+		if(!scheduler.isInterrupted())
+			scheduler.interrupt();
+	}
+	
+	public long time() {
+		return System.nanoTime();
 	}
 	
 	public void setSecondsPerMillisecond(double s) {
@@ -92,23 +95,5 @@ public class Simulation extends Thread {
 		double distribution = ExponentialNumber.expNumber(lambdaProcessTime);
 		collector.collect(DataCollector.Type.PROCESS, distribution);
 		return (long) (distribution/secondsPerMillisecond);
-	}
-	
-	@Override
-	public void run() {
-		server.start();
-		scheduler.start();
-		try {
-			while(true) {
-				long time = System.nanoTime();
-				Thread.sleep(0,1);
-				time = System.nanoTime() - time;
-				currentTime += secondsPerMillisecond/1000000 * time;
-			}
-		} catch(InterruptedException e) {
-			// paused
-			server.interrupt();
-			scheduler.interrupt();
-		}
 	}
 }
