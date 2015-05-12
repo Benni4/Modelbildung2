@@ -12,6 +12,9 @@ public class Simulation {
 	private Server server;
 	private DataCollector collector;
 	private double secondsPerMillisecond;
+	
+	public static  double scale; 
+
 	private int lambdaSpawnTime;
 	private int lambdaProcessTime;
 	
@@ -21,6 +24,7 @@ public class Simulation {
 	}
 	
 	public Simulation(double spm, int lambdaSpawn, int lambdaProcess, boolean d) {
+		scale = spm;
 		id = ZERO;
 		queue = new ConcurrentLinkedQueue<Client>();
 		scheduler = new Scheduler(this);

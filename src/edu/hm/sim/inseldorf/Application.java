@@ -10,6 +10,7 @@ import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 import javax.swing.JButton;
@@ -32,6 +33,12 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+
+import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
+
+enum ToPlot {
+	defaultToPlot, mdlQueueLenght, mdlAmountOfCounters, mdlQueueWaitingTime, mdlTimeInShop, mdlServerUtilization
+}
 
 public class Application {
 
@@ -63,16 +70,19 @@ public class Application {
 	private JTextPane txtpnConsole;
 
 	// Thread updateRate fuer GUI
-	private int updateRate = 500;
+	private int updateRate = 1000;
 
 	// Daten sammler aus dem die Plot daten entnommen werden
 	private DataCollector dataCollector;
 
-	// XY daten für die Plots
+	// XY daten fÃ¼r die Plots
 	private XYSeries xySeries;
 
 	// pause und Start button fuer label aktuallisierung
 	private JButton startButton;
+
+	private ArrayList<Object> dataList;
+	private ToPlot toPlot = ToPlot.defaultToPlot;
 
 	/**
 	 * Launch the application.
@@ -186,7 +196,6 @@ public class Application {
 							draw = false;
 						}
 					}
-
 				}
 				current = next;
 			}
@@ -234,18 +243,18 @@ public class Application {
 			public void actionPerformed(ActionEvent arg0) {
 				int spVal = (int) spinner.getValue();
 				int spVal_1 = (int) spinner_1.getValue();
-				double slVal = (double) (slider.getValue() / 1000);
+				double slVal = (double) (slider.getValue());
 
 				String message = "";
 
 				if (!running) {
 					if (spVal == 0 || spVal_1 == 0) {
 
-						message = "Eingabe von 0 ist nicht erlaubt\n ändern sie bitte die werte";
+						message = "Eingabe von 0 ist nicht erlaubt\n Ã¤ndern sie bitte die Werte";
 
 					}
 
-					message = "Simualtion läuft";
+					message = "Simualtion lÃ¤uft";
 					sim = new Simulation(slVal, spVal, spVal_1, true);
 					sim.start();
 					dataCollector = sim.getCollector();
@@ -266,18 +275,20 @@ public class Application {
 			}
 		});
 
-		JButton resetButton = new JButton("Zurücksetzten");
+		JButton resetButton = new JButton("ZurÃ¼cksetzten");
 		resetButton.setForeground(Color.BLUE);
 		resetButton.setBackground(Color.WHITE);
 		toolBar.add(resetButton);
 		resetButton.setFont(new Font("Arial Black", Font.PLAIN, 20));
 
-		// Zurücksetzten der Simulation
+		// ZurÃ¼cksetzten der Simulation
 		resetButton.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
 
-				String message = "Simulation stopped";
+
+				String message = "Simulation gestoppt";
+
 				startButton.setText("Start");
 				running = false;
 
@@ -294,35 +305,37 @@ public class Application {
 		toolBar.add(SliderTool);
 		SliderTool.setLayout(new GridLayout(2, 1, 10, 4));
 
-		JLabel SliderToolLBL = new JLabel("Simulation Time Regulator");
+		JLabel SliderToolLBL = new JLabel("Simulations Zeit Regulator");
 		SliderToolLBL.setForeground(Color.BLUE);
 		SliderToolLBL.setBackground(Color.WHITE);
 		SliderToolLBL.setFont(new Font("Arial Black", Font.PLAIN, 16));
 		SliderToolLBL.setHorizontalAlignment(SwingConstants.CENTER);
 		SliderTool.add(SliderToolLBL);
 
-		slider = new JSlider(SwingConstants.HORIZONTAL, 1, 100000, 1000);
+		slider = new JSlider(SwingConstants.HORIZONTAL, 0, 1000, 1);
+		slider.setMajorTickSpacing(200);
 		slider.setSnapToTicks(true);
 		slider.setPaintTicks(true);
-		slider.setMinorTickSpacing(10000);
+		slider.setMinorTickSpacing(100);
+		slider.setMinorTickSpacing(1000);
 		slider.setPaintLabels(true);
 		slider.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		slider.setForeground(Color.BLUE);
 		slider.setBackground(Color.WHITE);
 
-		Hashtable<Integer, JLabel> labels = new Hashtable<Integer, JLabel>();
-
-		JLabel sliderLBL = new JLabel("1 \"Echtzeit\"");
-		JLabel sliderLBL2 = new JLabel("100000 mal schneller");
-		sliderLBL.setFont(new Font("Arial Black", Font.PLAIN, 10));
-		sliderLBL2.setFont(new Font("Arial Black", Font.PLAIN, 10));
-		sliderLBL.setForeground(Color.BLUE);
-		sliderLBL2.setForeground(Color.BLUE);
-
-		labels.put(1, sliderLBL);
-		labels.put(100000, sliderLBL2);
-
-		slider.setLabelTable(labels);
+		// Hashtable<Integer, JLabel> labels = new Hashtable<Integer, JLabel>();
+		//
+		// JLabel sliderLBL = new JLabel("1 \"Echtzeit\"");
+		// JLabel sliderLBL2 = new JLabel("100000 mal schneller");
+		// sliderLBL.setFont(new Font("Arial Black", Font.PLAIN, 10));
+		// sliderLBL2.setFont(new Font("Arial Black", Font.PLAIN, 10));
+		// sliderLBL.setForeground(Color.BLUE);
+		// sliderLBL2.setForeground(Color.BLUE);
+		//
+		// labels.put(1, sliderLBL);
+		// labels.put(100000, sliderLBL2);
+		//
+		// slider.setLabelTable(labels);
 		SliderTool.add(slider);
 
 		ParameterPanal = new JPanel();
@@ -373,16 +386,19 @@ public class Application {
 		ChartChoosePanel.setLayout(new GridLayout(5, 1, 10, 5));
 
 		JButton btnMittlereWarteschlangenlnge = new JButton(
-				"mittlere Warteschlangenlaenge");
+				"mittlere WarteschlangenlÃ¤nge");
 		btnMittlereWarteschlangenlnge.setForeground(Color.BLUE);
 		ChartChoosePanel.add(btnMittlereWarteschlangenlnge);
 
 		btnMittlereWarteschlangenlnge.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
-				String seriesName = "Länge der Schlange zur Zeit";
 
-				XYSeries xySeries = new XYSeries("seriesName");
+				String seriesName = "LÃ¤nge der Schlange zur Zeit";
+				toPlot = ToPlot.mdlQueueLenght;
+
+
+				xySeries = new XYSeries("seriesName");
 
 				for (int i = 0; i < 100; i++) {
 					xySeries.add(i, i / 2.3);
@@ -397,7 +413,7 @@ public class Application {
 
 				dataset.addSeries(xySeries);
 
-				String middleQueueLength = "mittlere Warteschlangenlaenge";
+				String middleQueueLength = "mittlere WarteschlangenlÃ¤nge";
 
 				drawPlot(dataset, middleQueueLength);
 
@@ -434,18 +450,32 @@ public class Application {
 		Thread thread = new Thread() {
 			public void run() {
 
-				for (int i = 0; i < 10; i++) {
+				while (true) {
 
-					try {
-						this.sleep(updateRate);
-						next = i;
-						canvas.repaint();
+					if (sim != null) {
 
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						double slVal = (double) (slider.getValue());
+						sim.setSecondsPerMillisecond(slVal);
+
+					} else {
+
+						dataList = dataCollector.get(1);
+
+						// for (int i = 0; i < 100; i++) {
+						//
+						// try {
+						// this.sleep(updateRate);
+						// next = i;
+						// canvas.repaint();
+						//
+						// } catch (InterruptedException e) {
+						// // TODO Auto-generated catch block
+						// e.printStackTrace();
+						// }
+						//
+						// }
+
 					}
-
 				}
 
 			}
@@ -461,7 +491,7 @@ public class Application {
 	}
 
 	/**
-	 * Erzeugt den plot für das PlotFeld und setzt ihn anschließend fest
+	 * Erzeugt den plot fÃ¼r das PlotFeld und setzt ihn anschlieÃŸend fest
 	 */
 	private void drawPlot(XYSeriesCollection dataset, String plotname) {
 
@@ -481,6 +511,32 @@ public class Application {
 		// plot.setRenderer(renderer);
 
 		chartPanel.setChart(chart);
+
+	}
+
+	private void updateXY() {
+		
+		
+		switch (toPlot) {
+		case mdlQueueLenght:
+
+			break;
+		case mdlAmountOfCounters:
+
+			break;
+		case mdlQueueWaitingTime:
+
+			break;
+		case mdlTimeInShop:
+
+			break;
+		case mdlServerUtilization:
+
+			break;
+
+		default:
+			break;
+		}
 
 	}
 
