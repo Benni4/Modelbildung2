@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 
 public class TestSim {
 	public static void main(String...args) throws IOException, InterruptedException {
-		Simulation sim = new Simulation(0.1, 100, 100, true);
+		Simulation sim = new Simulation(0.01, 10, 1, true);
 
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 		String r = null;

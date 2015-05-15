@@ -45,7 +45,9 @@ public class DataCollector {
 			if (simulation.debug) {
 				System.out.println("Client " + data.toString() + " in Queue: "
 						+ simulation.getQueue().size());
-				System.out.println(" A.WaitTime: "+ Calculator.averageClientWaitTime() + " A.ProcessTime: "+Calculator.averageClientProcessTime());
+				System.out.println(" A.WaitTime: "+ Calculator.averageClientWaitTime() + " A.ProcessTime: "+Calculator.averageClientProcessTime()
+						+ "Q=" + (simulation.getLambdaSpawnTime() * Calculator.averageClientWaitTime()));
+				System.out.println(" Time: " + (simulation.time()/3600));
 			}
 		}
 	}

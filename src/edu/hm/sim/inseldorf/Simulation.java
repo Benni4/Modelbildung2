@@ -2,11 +2,12 @@ package edu.hm.sim.inseldorf;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class Simulation {
+public class Simulation extends Thread {
 	public static final int ZERO = 0;
 	
 	public int id;
 	public boolean debug;
+	private double currentTime;
 	private ConcurrentLinkedQueue<Client> queue;
 	private Scheduler scheduler;
 	private Server server;
@@ -24,6 +25,7 @@ public class Simulation {
 	}
 	
 	public Simulation(double spm, int lambdaSpawn, int lambdaProcess, boolean d) {
+		currentTime = ZERO;
 		scale = spm;
 		id = ZERO;
 		queue = new ConcurrentLinkedQueue<Client>();
@@ -45,20 +47,13 @@ public class Simulation {
 		collector = new DataCollector(this);
 	}
 	
-	public void start() {
-		server.start();
-		scheduler.start();
-	}
 	
 	public void pause() {
-		if(!server.isInterrupted())
-			server.interrupt();
-		if(!scheduler.isInterrupted())
-			scheduler.interrupt();
+		interrupt();
 	}
 	
-	public long time() {
-		return System.nanoTime();
+	public double time() {
+		return currentTime;
 	}
 	
 	public void setSecondsPerMillisecond(double s) {
@@ -71,6 +66,10 @@ public class Simulation {
 	
 	public void setLambdaProcessTime(int lambda) {
 		lambdaProcessTime = lambda;
+	}
+	
+	public int getLambdaSpawnTime() {
+		return lambdaSpawnTime;
 	}
 	
 	public Scheduler getScheduler() {
@@ -99,5 +98,22 @@ public class Simulation {
 		double distribution = ExponentialNumber.expNumber(lambdaProcessTime);
 		collector.collect(DataCollector.Type.PROCESS, distribution);
 		return (long) (distribution/secondsPerMillisecond);
+	}
+	
+	@Override
+	public void run() {
+		scheduler.start();
+		server.start();
+		try {
+			while(true) {
+				long time = System.nanoTime();
+				Thread.sleep(0,1);
+				time = System.nanoTime() - time;
+				currentTime += secondsPerMillisecond/1000000 * time;
+			}
+		} catch(InterruptedException e) {
+			scheduler.interrupt();
+			server.interrupt();
+		}
 	}
 }

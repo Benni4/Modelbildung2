@@ -5,9 +5,9 @@ public class Client {
 	public static final int PROCESSING = 0x1;
 	public static final int FINISHED = 0x02;
 	
-	private long timeAtSpawn;
-	private long timeAtServer;
-	private long timeAtFinish;
+	private double timeAtSpawn;
+	private double timeAtServer;
+	private double timeAtFinish;
 	private int clientNumber;
 	private int state;
 	
