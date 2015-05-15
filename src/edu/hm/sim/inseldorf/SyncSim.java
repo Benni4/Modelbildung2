@@ -9,6 +9,7 @@ public class SyncSim {
 	private int lambdaProcess;
 	private double lastSpawnTime;
 	private double q;
+	private int qcount;
 	private int lastid;
 	private double serverbusytill;
 	
@@ -23,7 +24,7 @@ public class SyncSim {
 		serverbusytill = -1;
 		sumwaittime = 0;
 		q = 0;
-		
+		qcount = 0;
 		clients = new ArrayList<>();
 	}
 	
@@ -49,37 +50,45 @@ public class SyncSim {
 		while(it.hasNext()) {
 			SyncClient cli = it.next();
 			if(cli.atServer < time) {
-				it.remove();
+
 			} else {
-				if(cli.atServer <= time && cli.atServer > lasttime) {
-					lasttime = cli.atServer;
+				if(it.hasNext()) {
+					if(cli.atServer <= time && cli.atServer > lasttime) {
+						lasttime = cli.atServer;
+					}
 				}
-				if(cli.atSpawn <= time && cli.atSpawn > lasttime) {
-					lasttime = cli.atSpawn;
-				}
+					if(cli.atSpawn <= time && cli.atSpawn > lasttime) {
+						lasttime = cli.atSpawn;
+					}
 			}
 		}
-		q += (time - lasttime) * size;
+		if((time - lasttime) > 0) {
+			qcount++;
+			q += (time - lasttime) * size;
+			System.out.println("(time " + time + " - lasttime " + lasttime+ ") * size " + size);
+		}
 	}
 	
 	public void run() {
-		while(true) {
+		while(lastid < 100) {
 			SyncClient cli = new SyncClient(lastid++);
 			clients.add(cli);
 			cli.deltaSpawn = nextClient();
 			cli.deltaProcess = processClient();
 			lastSpawnTime += cli.deltaSpawn;
 			cli.atSpawn = lastSpawnTime;
-			checkAt(cli.atSpawn, true);
 			cli.deltaQueue = cutNegative(serverbusytill - cli.atSpawn);
 			cli.atServer = cli.atSpawn + cli.deltaQueue;
-			checkAt(cli.atServer, false);
+			if(cli.deltaQueue != 0) {
+				checkAt(cli.atSpawn, true);
+				checkAt(cli.atServer, false);
+			}
 			cli.atFinish = cli.atServer + cli.deltaProcess;
 			serverbusytill = cli.atFinish;
 			sumwaittime += cli.deltaQueue;
 			
 			System.out.println(cli);
-			System.out.println("d = " + (sumwaittime/lastid) + " 0 = " + (lambdaSpawn*(sumwaittime/lastid) - q/cli.atFinish));
+			System.out.println("d = " + (sumwaittime/lastid) + " 0 = " + (lambdaSpawn*(sumwaittime/(lastid-1)) - q/qcount));
 		}
 	}
 	
