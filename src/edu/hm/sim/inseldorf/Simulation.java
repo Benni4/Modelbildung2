@@ -8,6 +8,10 @@ public class Simulation extends Thread {
 	public int id;
 	public boolean debug;
 	private double currentTime;
+	public  double getCurrentTime() {
+		return currentTime;
+	}
+
 	private ConcurrentLinkedQueue<Client> queue;
 	private Scheduler scheduler;
 	private Server server;

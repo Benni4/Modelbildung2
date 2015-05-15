@@ -91,7 +91,6 @@ public class Application {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-
 					Application window = new Application();
 					window.frmInseldorf.setVisible(true);
 

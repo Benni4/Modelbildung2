@@ -21,6 +21,10 @@ public class DataCollector {
 	//Calculator usage only
 	public static double sumOfPersonsInQueue = 0;
 	public static int personCounter = 0;
+	public static double queueTime = 0;
+	
+	private double qStartTime = 0;
+	private double qLifeTime = 0;
 	
 
 	public DataCollector(Simulation sim) {
@@ -37,16 +41,18 @@ public class DataCollector {
 		} else if (type == Type.SPAWN) {
 			spawnTimes.add((double) data);
 		} else { // CLIENT
+			qLifeTime = qStartTime-simulation.getCurrentTime();
+			qStartTime = simulation.getCurrentTime();
 			clients.add((Client) data);
 			queueSizes.add(simulation.getQueue().size());
-			sumOfPersonsInQueue += simulation.getQueue().size();
+			sumOfPersonsInQueue += simulation.getQueue().size()*qLifeTime;
 			personCounter++;
 
 			if (simulation.debug) {
 				System.out.println("Client " + data.toString() + " in Queue: "
 						+ simulation.getQueue().size());
 				System.out.println(" A.WaitTime: "+ Calculator.averageClientWaitTime() + " A.ProcessTime: "+Calculator.averageClientProcessTime()
-						+ "Q=" + (simulation.getLambdaSpawnTime() * Calculator.averageClientWaitTime()));
+						+ " - 0=" + ((simulation.getLambdaSpawnTime() * Calculator.averageClientWaitTime()) - Calculator.averageQueueSize()));
 				System.out.println(" Time: " + (simulation.time()/3600));
 			}
 		}
