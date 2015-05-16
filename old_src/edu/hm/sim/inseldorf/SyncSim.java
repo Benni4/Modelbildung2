@@ -3,7 +3,6 @@ package edu.hm.sim.inseldorf;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-
 public class SyncSim {
 	private int lambdaSpawn;
 	private int lambdaProcess;

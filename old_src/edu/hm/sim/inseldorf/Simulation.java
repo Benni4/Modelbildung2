@@ -23,7 +23,6 @@ public class Simulation extends Thread {
 	private int lambdaSpawnTime;
 	private int lambdaProcessTime;
 	
-
 	public Simulation(double spm, int lambdaSpawn, int lambdaProcess) {
 		this(spm, lambdaSpawn, lambdaProcess, false);
 	}
