@@ -1,9 +1,18 @@
 package edu.hm.sim.inseldorf.model;
 
 import edu.hm.sim.inseldorf.controller.Simulation;
+import edu.hm.sim.inseldorf.util.Pool.PoolFactory;
+import edu.hm.sim.inseldorf.util.Pool.Poolable;
 import edu.hm.sim.inseldorf.util.Util;
 
-public class Client {
+public class Client extends Poolable {
+	public static class ClientFactory implements PoolFactory<Client> {
+		@Override
+		public Client create() {
+			return new Client();
+		}
+	}
+	
 	public int id;
 	public double atSpawn;
 	public double atServer;
@@ -12,20 +21,20 @@ public class Client {
 	public double deltaQueue;
 	public double deltaProcess;
 
-	public Client(Simulation sim) {
+	public void _init(Simulation sim) {
 		id = sim.currentID++;
 
 		deltaSpawn = Util.expNumber(sim.lambdaSpawn);
 		atSpawn = (sim.currentSpawnTime += deltaSpawn);
-		sim.addEvent(new Event(this, Event.AT_SPAWN, atSpawn));
+		sim.addEvent(Simulation.EventPool.alloc(this, Event.AT_SPAWN, atSpawn));
 
 		deltaQueue = Util.cutNegative(sim.serverBusyTill - atSpawn);
 		atServer = atSpawn + deltaQueue;
-		sim.addEvent(new Event(this, Event.AT_SERVER, atServer));
+		sim.addEvent(Simulation.EventPool.alloc(this, Event.AT_SERVER, atServer));
 
 		deltaProcess = Util.expNumber(sim.lambdaProcess);
 		atFinish = (sim.serverBusyTill = atServer + deltaProcess);
-		sim.addEvent(new Event(this, Event.AT_FINISH, atFinish));
+		sim.addEvent(Simulation.EventPool.alloc(this, Event.AT_FINISH, atFinish));
 	}
 
 	public String toString() {
@@ -33,4 +42,12 @@ public class Client {
 				" - " + atFinish + " | wartezeit: " + deltaQueue + 
 				" | verarbeitungszeit " + deltaProcess + "";
 	}
+
+	@Override
+	public void init(Object... args) {
+		_init((Simulation) args[0]);
+	}
+
+	@Override
+	public void destroy() { }
 }

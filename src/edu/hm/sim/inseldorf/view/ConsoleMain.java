@@ -25,5 +25,6 @@ public class ConsoleMain implements EventListener {
 		System.out.println("Little 0=lambda*d-Q: 0 ≐ " + (1/col.averageClientSpawnTime() * 
 				col.averageClientWaitTime() - col.averageQueueSize()) + " = 1/" + col.averageClientSpawnTime() +
 				" * " + col.averageClientWaitTime() + " - " + col.averageQueueSize() );
+		System.out.println("Pools: C " + Simulation.ClientPool.size() + " - E " + Simulation.EventPool.size());
 	}
 }

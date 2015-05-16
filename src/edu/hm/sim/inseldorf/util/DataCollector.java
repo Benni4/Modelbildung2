@@ -99,6 +99,7 @@ public class DataCollector {
 		while(it.hasNext()) {
 			Client client = it.next();
 			if(client.atFinish <= event.time) {
+				Simulation.ClientPool.free(client);
 				it.remove(); // remove finished clients from the system
 			} else {
 				cNumberOfClients++;
@@ -136,5 +137,7 @@ public class DataCollector {
 		for(EventListener el : listeners) {
 			el.notify(this, event);
 		}
+		
+		Simulation.EventPool.free(event);
 	}
 }
