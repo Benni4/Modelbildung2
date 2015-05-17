@@ -30,7 +30,7 @@ public class Simulation extends Thread {
 	public ArrayList<Event> events = new ArrayList<>();
 	public ArrayList<Client> clients = new ArrayList<>();
 
-	public Simulation(int spm, int lambdaSpawn, int lambdaProcess) {
+	public Simulation(double spm, int lambdaSpawn, int lambdaProcess) {
 		this.lambdaSpawn = lambdaSpawn;
 		this.lambdaProcess = lambdaProcess;
 		this.secondsPerMillisecond = spm;
