@@ -10,8 +10,6 @@ import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Hashtable;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -31,31 +29,21 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.data.xy.XYDataset;
-import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
-
 import edu.hm.sim.inseldorf.controller.Simulation;
-import edu.hm.sim.inseldorf.model.Event;
-import edu.hm.sim.inseldorf.util.DataCollector;
-import edu.hm.sim.inseldorf.util.EventListener;
 
+public class Application {
 
-
-public class Application{
-	
-	public static final int defaultToPlot =0x00;
+	public static final int defaultToPlot = 0x00;
 	public static final int mdlQueueLenght = 0x01;
-	public static final int mdlAmountOfCounters =0x02;
-	public static final int mdlQueueWaitingTime=0x03;
-	public static final int mdlTimeInShop =0x04;
-	public static final int mdlServerUtilization= 0x05;
-	
+	public static final int mdlAmountOfCounters = 0x02;
+	public static final int mdlQueueWaitingTime = 0x03;
+	public static final int mdlTimeInShop = 0x04;
+	public static final int mdlServerUtilization = 0x05;
 
 	private JFrame frmInseldorf;
-	private JProgressBar ServerAuslastung;
+	private JProgressBar serverAuslastung;
 	private JLabel lblSever;
 	private JLabel lblQueue;
 	private JPanel QueueSeverVisualisation;
@@ -91,7 +79,6 @@ public class Application{
 	// pause und Start button fuer label aktuallisierung
 	private JButton startButton;
 
-	private ArrayList<Object> dataList;
 	private int toPlot = defaultToPlot;
 
 	/**
@@ -101,7 +88,7 @@ public class Application{
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					 Application window = new Application();
+					Application window = new Application();
 					window.frmInseldorf.setVisible(true);
 
 				} catch (Exception e) {
@@ -208,22 +195,23 @@ public class Application{
 				current = next;
 			}
 		};
+
 		canvas.setBackground(Color.LIGHT_GRAY);
 		canvas.setBounds(7, 104, 300, 200);
 		QueueSeverVisualisation.add(canvas);
 
-		ServerAuslastung = new JProgressBar();
-		ServerAuslastung.setValue(5);
-		ServerAuslastung.setStringPainted(true);
-		ServerAuslastung.setBounds(340, 116, 100, 100);
-		QueueSeverVisualisation.add(ServerAuslastung);
-		ServerAuslastung.setBackground(Color.LIGHT_GRAY);
-		ServerAuslastung.setForeground(Color.RED);
-		ServerAuslastung.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		ServerAuslastung.setMaximum(13);
-		ServerAuslastung
+		serverAuslastung = new JProgressBar();
+		serverAuslastung.setValue(0);
+		serverAuslastung.setStringPainted(true);
+		serverAuslastung.setBounds(340, 116, 100, 100);
+		QueueSeverVisualisation.add(serverAuslastung);
+		serverAuslastung.setBackground(Color.LIGHT_GRAY);
+		serverAuslastung.setForeground(Color.RED);
+		serverAuslastung.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		serverAuslastung.setMaximum(100);
+		serverAuslastung
 				.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-		ServerAuslastung.setOrientation(SwingConstants.VERTICAL);
+		serverAuslastung.setOrientation(SwingConstants.VERTICAL);
 
 		// xy plot Chart fuer visualisierung
 
@@ -264,21 +252,22 @@ public class Application{
 
 					message = "Simualtion läuft";
 					sim = new Simulation(slVal, spVal, spVal_1);
-					plotDataListener =new PlotDataListener();
+					plotDataListener = new PlotDataListener();
 					sim.addListener(plotDataListener);
 					sim.start();
-					
+					updateGUI();
+
 					startButton.setText("Pause");
 					running = true;
 
 				}
-//					else {
-//					message = "Simualtion pausiert";
-//					sim.pause();
-//					startButton.setText("Start");
-//					running = false;
-//
-//				}
+				// else {
+				// message = "Simualtion pausiert";
+				// sim.pause();
+				// startButton.setText("Start");
+				// running = false;
+				//
+				// }
 
 				System.out.println(message);
 				txtpnConsole.setText(message);
@@ -297,12 +286,11 @@ public class Application{
 
 			public void actionPerformed(ActionEvent arg0) {
 
-
 				String message = "Simulation gestoppt";
 
 				startButton.setText("Start");
 				running = false;
-				
+
 				txtpnConsole.setText(message);
 				System.out.println(message);
 			}
@@ -322,12 +310,11 @@ public class Application{
 		SliderToolLBL.setHorizontalAlignment(SwingConstants.CENTER);
 		SliderTool.add(SliderToolLBL);
 
-		slider = new JSlider(SwingConstants.HORIZONTAL, 0, 1000, 1);
-		slider.setMajorTickSpacing(200);
+		slider = new JSlider(SwingConstants.HORIZONTAL, 500, 1500, 1100);
 		slider.setSnapToTicks(true);
+		slider.setMajorTickSpacing(200);
 		slider.setPaintTicks(true);
-		slider.setMinorTickSpacing(100);
-		slider.setMinorTickSpacing(1000);
+		slider.setMinorTickSpacing(200);
 		slider.setPaintLabels(true);
 		slider.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		slider.setForeground(Color.BLUE);
@@ -404,7 +391,6 @@ public class Application{
 			public void actionPerformed(ActionEvent arg0) {
 
 				toPlot = mdlQueueLenght;
-				
 				updateXY();
 
 			}
@@ -414,41 +400,60 @@ public class Application{
 				"mittlere Anzahl von Kunden im Shop");
 		btnMittlereAnzahlVon.setForeground(Color.BLUE);
 		ChartChoosePanel.add(btnMittlereAnzahlVon);
-		
+
 		btnMittlereAnzahlVon.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
+
 				toPlot = mdlAmountOfCounters;
-				
 				updateXY();
 
 			}
 		});
 
 		JButton btnMittlereAnstehzeit = new JButton("mittlere Anstehzeit");
-		
+		btnMittlereAnstehzeit.setForeground(Color.BLUE);
+		ChartChoosePanel.add(btnMittlereAnstehzeit);
+
 		btnMittlereAnstehzeit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
 				toPlot = mdlQueueWaitingTime;
-				
+
 				updateXY();
 
 			}
 		});
-		
-		btnMittlereAnstehzeit.setForeground(Color.BLUE);
-		ChartChoosePanel.add(btnMittlereAnstehzeit);
 
 		JButton btnMittlereVerweildauerIm = new JButton(
 				"mittlere Verweildauer im Shop");
+
 		btnMittlereVerweildauerIm.setForeground(Color.BLUE);
 		ChartChoosePanel.add(btnMittlereVerweildauerIm);
+
+		btnMittlereVerweildauerIm.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+
+				toPlot = mdlTimeInShop;
+
+				updateXY();
+
+			}
+		});
 
 		JButton btnmittlereServerauslastung = new JButton(
 				"mittlere Serverauslastung");
 		btnmittlereServerauslastung.setForeground(Color.BLUE);
 		ChartChoosePanel.add(btnmittlereServerauslastung);
+
+		btnmittlereServerauslastung.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+
+				toPlot = mdlServerUtilization;
+
+				updateXY();
+
+			}
+		});
 
 	}
 
@@ -459,24 +464,25 @@ public class Application{
 		// TODO Nur eine Update Methode
 
 		Thread thread = new Thread() {
+			@SuppressWarnings("static-access")
 			public void run() {
 
 				while (true) {
 
-					
 					try {
 						this.sleep(updateRate);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-				// canvas.repaint();
 					
+					serverAuslastung.setValue((int) (plotDataListener
+							.getCurrentServerUtilization() * 100));
+					next = plotDataListener.getCurrentNbrOfClientsInQueue();
+					canvas.repaint();
 
-					}
 				}
-
-			
+			}
 
 		};
 
@@ -487,10 +493,12 @@ public class Application{
 	/**
 	 * Erzeugt den plot für das PlotFeld und setzt ihn anschließend fest
 	 */
-	private void drawPlot(XYSeriesCollection dataset, String plotname) {
+	private void drawPlot(XYSeriesCollection dataset, String plotname,
+			String yaxis) {
 
-		JFreeChart chart = ChartFactory.createXYLineChart(plotname, "x", "y",
-				dataset, PlotOrientation.VERTICAL, true, true, false);
+		JFreeChart chart = ChartFactory.createXYLineChart(plotname,
+				"Zeit in s", yaxis, dataset, PlotOrientation.VERTICAL, true,
+				true, false);
 
 		final XYPlot plot = chart.getXYPlot();
 		plot.setBackgroundPaint(Color.lightGray);
@@ -498,43 +506,45 @@ public class Application{
 		plot.setDomainGridlinePaint(Color.white);
 		plot.setRangeGridlinePaint(Color.white);
 
-		// final XYLineAndShapeRenderer renderer = new
-		// XYLineAndShapeRenderer();
-		// renderer.setSeriesLinesVisible(0, false);
-		// renderer.setSeriesShapesVisible(1, false);
-		// plot.setRenderer(renderer);
-
 		chartPanel.setChart(chart);
 
 	}
 
 	private void updateXY() {
-		
+
 		String plottitel;
-				
+
 		switch (toPlot) {
 		case mdlQueueLenght:
 			plottitel = "mittlere Warteschlangenlänge";
-			
-			drawPlot(plotDataListener.getQueueLenghtToTime(), plottitel);
-			
+
+			drawPlot(plotDataListener.getQueueLenghtToTime(), plottitel,
+					"in Personen");
 
 			break;
 		case mdlAmountOfCounters:
-			
+
 			plottitel = "mittlere Anzahl von Kunden im Shop";
-			drawPlot(plotDataListener.getQueueLenghtToTime(), plottitel);
+			drawPlot(plotDataListener.getMdlAmountOfCountersToTime(),
+					plottitel, "in Personen");
 
 			break;
 		case mdlQueueWaitingTime:
 			plottitel = "mittlere Anstehzeit";
-			drawPlot(plotDataListener.getWaitingTimeToTime(), plottitel);
-			
+			drawPlot(plotDataListener.getWaitingTimeToTime(), plottitel,
+					"Zeit in s");
+
 			break;
 		case mdlTimeInShop:
+			plottitel = "mittlere Verweildauer im Shop";
+			drawPlot(plotDataListener.getMdlTimeInShopToTime(), plottitel,
+					"Zeit in s");
 
 			break;
 		case mdlServerUtilization:
+			plottitel = "mittlere Serverauslastung";
+			drawPlot(plotDataListener.getMdlTimeInShopToTime(), plottitel,
+					"in %");
 
 			break;
 
@@ -543,6 +553,5 @@ public class Application{
 		}
 
 	}
-
 
 }
