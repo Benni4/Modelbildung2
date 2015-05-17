@@ -102,11 +102,11 @@ public class DataCollector {
 				Simulation.ClientPool.free(client);
 				it.remove(); // remove finished clients from the system
 			} else {
-				cNumberOfClients++;
-				if(client.atSpawn > event.time) { // not yet spawned
-				} else if(client.atServer > event.time) { // in queue
+				if(client.atSpawn <= event.time && client.atServer > event.time) { // in queue
+					cNumberOfClients++;
 					cQueueSize++;
-				} else { // at server
+				} else if(client.atServer <= event.time && client.atFinish > event.time){ // at server
+					cNumberOfClients++;
 					cServerSize++; // should be one or zero
 				}
 			}
