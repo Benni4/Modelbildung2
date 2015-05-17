@@ -507,6 +507,7 @@ public class Application {
 		plot.setRangeGridlinePaint(Color.white);
 
 		chartPanel.setChart(chart);
+		chartPanel.repaint();
 
 	}
 
@@ -543,7 +544,7 @@ public class Application {
 			break;
 		case mdlServerUtilization:
 			plottitel = "mittlere Serverauslastung";
-			drawPlot(plotDataListener.getMdlTimeInShopToTime(), plottitel,
+			drawPlot(plotDataListener.getMdlServerUtilizationToTime(), plottitel,
 					"in %");
 
 			break;
