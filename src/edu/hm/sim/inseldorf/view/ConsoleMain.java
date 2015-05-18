@@ -7,15 +7,9 @@ import edu.hm.sim.inseldorf.util.EventListener;
 
 public class ConsoleMain implements EventListener {
 	public static void main(String...args) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-		Simulation sim = new Simulation(10, 1000, 1000);
-=======
+
 		Simulation sim = new Simulation(100, 1000, 100);
->>>>>>> origin/master
-=======
-		Simulation sim = new Simulation(100, 1000, 100);
->>>>>>> origin/master
+
 		sim.addListener(new ConsoleMain());
 		sim.start();
 	}
