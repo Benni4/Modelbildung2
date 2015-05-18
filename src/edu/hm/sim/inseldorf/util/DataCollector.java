@@ -82,7 +82,7 @@ public class DataCollector {
 	}
 
 	public double averageClientInShopTime() {
-		return (avgClientWaitTime + avgClientProcessTime) / getClientCount();
+		return averageClientWaitTime() + averageClientProcessTime();
 	}
 
 	public void addListener(EventListener ev) {

@@ -31,10 +31,17 @@ public class ConsoleMain implements EventListener {
 		System.out.println("mittlere Serverauslastung: " + col.averageServerLoad());
 		//System.out.println("Vergangene Zeit: " + (int)(col.time()/24) + " Tage "+(int)col.time()%24 + " Stunden");
 		System.out.println("Vergangene Zeit: " + (col.time()) + " in Stunden");
+<<<<<<< HEAD
 
 		System.out.println("Little 0=lambda*d-Q: 0 ≐ " + (1/col.averageClientSpawnTime() * 
+=======
+		System.out.println("Little1 0=lambda*d-Q: 0 ≐ " + (1/col.averageClientSpawnTime() * 
+>>>>>>> origin/master
 				col.averageClientWaitTime() - col.averageQueueSize()) + " = 1/" + col.averageClientSpawnTime() +
 				" * " + col.averageClientWaitTime() + " - " + col.averageQueueSize() );
+		System.out.println("Little2 0=lambda*w-L: 0 ≐ " + (1/col.averageClientSpawnTime() * 
+				col.averageClientInShopTime() - col.averageNumberOfClients()) + "= 1/" + col.averageClientSpawnTime() +
+				" * " + col.averageClientInShopTime() + " - " + col.averageNumberOfClients());
 		System.out.println("Pools: C " + Simulation.ClientPool.size() + " - E " + Simulation.EventPool.size());
 	}
 }
