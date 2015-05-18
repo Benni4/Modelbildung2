@@ -7,9 +7,7 @@ import edu.hm.sim.inseldorf.util.EventListener;
 
 public class ConsoleMain implements EventListener {
 	public static void main(String...args) {
-
-		Simulation sim = new Simulation(100, 1000, 100);
-
+		Simulation sim = new Simulation(10, 1000, 100);
 		sim.addListener(new ConsoleMain());
 		sim.start();
 	}
@@ -23,8 +21,7 @@ public class ConsoleMain implements EventListener {
 		System.out.println("mittlere Anstehzeit: " + col.averageClientWaitTime());
 		System.out.println("mittlere Verweildauer im Shop: " + col.averageClientInShopTime());
 		System.out.println("mittlere Serverauslastung: " + col.averageServerLoad());
-		//System.out.println("Vergangene Zeit: " + (int)(col.time()/24) + " Tage "+(int)col.time()%24 + " Stunden");
-		System.out.println("Vergangene Zeit: " + (col.time()) + " in Stunden");
+		System.out.println("Vergangene Zeit: " + (int)(col.timeInHours()/24) + " Tage "+ col.timeInHours()%24 + " Stunden");
 
 		System.out.println("Little1 0=lambda*d-Q: 0 ≐ " + (1/col.averageClientSpawnTime() * 
 				col.averageClientWaitTime() - col.averageQueueSize()) + " = 1/" + col.averageClientSpawnTime() +

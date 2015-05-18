@@ -49,5 +49,7 @@ public class Client extends Poolable {
 	}
 
 	@Override
-	public void destroy() { }
+	public void destroy() {
+		atSpawn = atServer = atFinish = deltaSpawn = deltaQueue = deltaProcess = id = 0;
+	}
 }

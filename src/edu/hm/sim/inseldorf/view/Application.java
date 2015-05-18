@@ -62,6 +62,8 @@ public class Application {
 	private Simulation sim;
 	private boolean running;
 
+	
+
 	// Parameter Fields for the simulation
 	private JSlider slider;
 	private JSpinner spinner;
@@ -268,7 +270,7 @@ public class Application {
 					}
 					
 
-					message = "Simualtion läuft";
+					message = "Simulation läuft";
 					sim = new Simulation(slVal, spVal, spVal_1);
 					plotDataListener = new PlotDataListener();
 					sim.addListener(plotDataListener);
@@ -285,6 +287,7 @@ public class Application {
 					
 
 				}
+<<<<<<< HEAD
 				 else {
 				 message = "Simualtion pausiert";
 				 sim.interrupt();
@@ -292,6 +295,14 @@ public class Application {
 				 running = false;
 				
 				 }
+=======
+//				 else {
+//				 message = "Simulation pausiert";
+//				 sim.pause()
+//				 startButton.setText("Start");
+//				 running = false;
+//				 }
+>>>>>>> origin/master
 
 				System.out.println(message);
 				txtpnConsole.setText(message);

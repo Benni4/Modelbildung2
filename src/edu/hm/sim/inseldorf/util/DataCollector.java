@@ -3,8 +3,6 @@ package edu.hm.sim.inseldorf.util;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import com.sun.org.apache.bcel.internal.generic.CPInstruction;
-
 import edu.hm.sim.inseldorf.controller.Simulation;
 import edu.hm.sim.inseldorf.model.Client;
 import edu.hm.sim.inseldorf.model.Event;
@@ -27,7 +25,6 @@ public class DataCollector {
 	private int cClientProcessTime = 0;
 
 	private double avgQueueSize = 0;
-	private double avgServerLoad = 0;
 	private double avgClientSpawnTime = 0;
 	private double avgClientWaitTime = 0;
 	private double avgClientProcessTime = 0;
@@ -54,7 +51,15 @@ public class DataCollector {
 	}
 
 	public double time() {
-		return lastEvent/3600;
+		return lastEvent;
+	}
+	
+	public double timeInHours() {
+		return lastEvent / 3600;
+	}
+
+	public int getcServerSize() {
+		return cServerSize;
 	}
 
 	public double averageQueueSize() {
@@ -66,7 +71,8 @@ public class DataCollector {
 	}
 
 	public double averageServerLoad() {
-		return avgServerLoad / lastEvent;
+		//return avgServerLoad / lastEvent;
+		return avgClientProcessTime/lastEvent;
 	}
 
 	public double averageClientSpawnTime() {
@@ -90,15 +96,9 @@ public class DataCollector {
 	}
 	
 	public int getCQueueSize(){
-		
 		return cQueueSize;
 	}
 	
-	
-
-	
-	
-
 	public void process(Event event) {
 		double delta = event.time - lastEvent;
 		lastEvent = event.time;
@@ -123,11 +123,14 @@ public class DataCollector {
 				}
 			}
 		}
-		if(cServerSize > 1) throw new RuntimeException("Server can not process more than 1 client at a time");
+		if(cServerSize > 1) {
+			for(Client c : simulation.clients) {
+				System.out.println("-----------------------------------------------------------");
+				System.out.println(c);
+			}
+			throw new RuntimeException("Server can not process more than 1 client at a time");
+		}
 		avgQueueSize += cQueueSize * delta;
-
-		avgServerLoad += cServerSize * delta;
-
 		avgNumberOfClients += cNumberOfClients * delta;
 
 		switch(event.type) {
@@ -151,7 +154,5 @@ public class DataCollector {
 		for(EventListener el : listeners) {
 			el.notify(this, event);
 		}
-		
-		Simulation.EventPool.free(event);
 	}
 }

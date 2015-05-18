@@ -42,8 +42,11 @@ public class Simulation extends Thread {
 	}
 
 	public void addEvent(Event e) {
-		events.add(e);
-		Collections.sort(events); // TODO optimize?
+		for(int i = 0; i < events.size(); ++i) {
+			if(events.get(i).time > e.time) {
+				events.add(i, e);
+			}
+		}
 	}
 
 	public void processEventsUntil(double time) {
@@ -52,6 +55,7 @@ public class Simulation extends Thread {
 			Event ev = it.next();
 			if(ev.time < time) {
 				collector.process(ev);
+				EventPool.free(ev);
 				it.remove();
 			}
 		}
