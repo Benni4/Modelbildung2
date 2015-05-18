@@ -21,6 +21,15 @@ public class Util {
 		double y = (-lambda)*Math.log(1 - a);	
 		return y;
 	}
+	
+	
+	public static double expNumber(double lambda,long seed){
+		Random random = new Random(seed);
+		double a = (random.nextDouble());
+		double y = (-lambda)*Math.log(1 - a);	
+		return y;
+		
+	}
 
 	/**
 	 * Methode um die Funktion mittels Mathematica zu testen.

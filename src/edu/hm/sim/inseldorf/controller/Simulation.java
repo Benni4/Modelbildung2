@@ -17,6 +17,34 @@ public class Simulation extends Thread {
 	public static Pool<Event> EventPool = new Pool<Event>(new EventFactory());
 
 	public int lambdaSpawn;
+	public int getLambdaSpawn() {
+		return lambdaSpawn;
+	}
+
+	public void setLambdaSpawn(int lambdaSpawn) {
+		this.lambdaSpawn = lambdaSpawn;
+	}
+
+	public int getLambdaProcess() {
+		return lambdaProcess;
+	}
+
+	public void setLambdaProcess(int lambdaProcess) {
+		this.lambdaProcess = lambdaProcess;
+	}
+
+	public double getSecondsPerMillisecond() {
+		return secondsPerMillisecond;
+	}
+
+	public void setSecondsPerMillisecond(double secondsPerMillisecond) {
+		this.secondsPerMillisecond = secondsPerMillisecond;
+	}
+	
+	public long spawnSeed =0l;
+	public long processSeed =0l;
+	
+
 	public int lambdaProcess;
 	public int currentID = 0;
 
@@ -35,6 +63,13 @@ public class Simulation extends Thread {
 		this.lambdaProcess = lambdaProcess;
 		this.secondsPerMillisecond = spm;
 		collector = new DataCollector(this);
+	}
+	
+	public Simulation(double spm,int lambdaSpawn,int lambdaProcess,long spawnSeed,long processSeed){
+		
+		this(spm,lambdaSpawn,lambdaProcess);
+		this.spawnSeed = spawnSeed;
+		this.processSeed = processSeed;
 	}
 
 	public void addListener(EventListener ev) {
