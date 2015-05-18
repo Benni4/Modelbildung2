@@ -24,11 +24,6 @@ public class DataCollector {
 	private int cNumberOfClients;
 	private int cQueueSize;
 
-	public int getcServerSize() {
-		return cServerSize;
-	}
-
-
 	private int cServerSize;
 
 	private int cClientSpawnTime = 0;

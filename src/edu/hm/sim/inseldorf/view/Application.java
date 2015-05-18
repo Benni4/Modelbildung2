@@ -513,16 +513,11 @@ public class Application {
 							.getCurrentServerUtilization() * 100));
 					next  = plotDataListener.getCurrentNbrOfClientsInQueue();
 					canvas.repaint();
-<<<<<<< HEAD
+
 					int spm = (int)slider.getValue();
 					int lambdaSpawn = (int)spinner.getValue();
 					int lambdaProcess = (int)spinner_1.getValue();
-					
-					
-					
 
-=======
->>>>>>> origin/master
 				}
 			}
 
