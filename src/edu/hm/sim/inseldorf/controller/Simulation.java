@@ -42,11 +42,15 @@ public class Simulation extends Thread {
 	}
 
 	public void addEvent(Event e) {
-		for(int i = 0; i < events.size(); ++i) {
-			if(events.get(i).time > e.time) {
-				events.add(i, e);
-			}
-		}
+        int i = 0;
+        boolean found = false;
+        while (!found && (i < events.size())) {
+            found = e.compareTo(events.get(i)) < 0;
+            if (!found) {
+                i++;
+            }
+        }
+        events.add(i,e);
 	}
 
 	public void processEventsUntil(double time) {
