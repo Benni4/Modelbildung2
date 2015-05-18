@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 
-import com.apple.eawt.Application;
-
 import edu.hm.sim.inseldorf.model.Client;
 import edu.hm.sim.inseldorf.model.Client.ClientFactory;
 import edu.hm.sim.inseldorf.model.Event;
@@ -46,8 +44,15 @@ public class Simulation extends Thread {
 	}
 
 	public void addEvent(Event e) {
-		events.add(e);
-		Collections.sort(events); // TODO optimize?
+        int i = 0;
+        boolean found = false;
+        while (!found && (i < events.size())) {
+            found = e.compareTo(events.get(i)) < 0;
+            if (!found) {
+                i++;
+            }
+        }
+        events.add(i,e);
 	}
 
 	public void processEventsUntil(double time) {
@@ -56,6 +61,7 @@ public class Simulation extends Thread {
 			Event ev = it.next();
 			if(ev.time < time) {
 				collector.process(ev);
+				EventPool.free(ev);
 				it.remove();
 			}
 		}

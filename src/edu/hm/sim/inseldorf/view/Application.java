@@ -73,7 +73,7 @@ public class Application {
 	private JTextPane txtpnConsole;
 
 	// Thread updateRate fuer GUI
-	private int updateRate = 1000;
+	private int updateRate = 100;
 
 	// XY daten für die Plots
 	private PlotDataListener plotDataListener;
@@ -154,8 +154,12 @@ public class Application {
 				int index = 0;
 
 				boolean draw = false;
+				boolean black = false;
 				int curX = 0;
 				int curY = 0;
+				
+				
+				
 
 				for (int y = 0; y < ymax; y += 10) {
 					for (int x = 0; x < xmax; x += 10) {
@@ -166,12 +170,14 @@ public class Application {
 								curX = x;
 								curY = y;
 								draw = true;
+								black = true;
 
 							} else {
 
 								curX = xmax - x - 10;
 								curY = y;
 								draw = true;
+								black = true;
 
 							}
 						} else if (index >= next && index <= current) {
@@ -179,25 +185,34 @@ public class Application {
 								curX = x;
 								curY = y;
 								draw = true;
+								black = false;
 
 							} else {
 								curX = xmax - x - 10;
 								curY = y;
 								draw = true;
+								black = false;
 
 							}
 						}
 						if (draw) {
+							
+							Color fillColor= black ? Color.BLACK: Color.LIGHT_GRAY;
+							g.setColor(fillColor);
 							g.drawRect(curX, curY, 10, 10);
 							g.fillRect(curX, curY, 10, 10);
+							
 							draw = false;
+							
 						}
 					}
 				}
 				current = next;
 			}
 		};
-
+		
+		
+		
 		canvas.setBackground(Color.LIGHT_GRAY);
 		canvas.setBounds(7, 104, 300, 200);
 		QueueSeverVisualisation.add(canvas);
@@ -246,11 +261,14 @@ public class Application {
 				String message = "";
 
 				if (!running) {
+					if(sim == null){
+					
 					if (spVal == 0 || spVal_1 == 0) {
 
 						message = "Eingabe von 0 ist nicht erlaubt\n ändern sie bitte die Werte";
 
 					}
+					
 
 					message = "Simulation läuft";
 					sim = new Simulation(slVal, spVal, spVal_1);
@@ -258,17 +276,25 @@ public class Application {
 					sim.addListener(plotDataListener);
 					sim.start();
 					updateGUI();
-
+					}
+					else{
+						sim.interrupt();
+					}
+						
 					startButton.setText("Pause");
 					running = true;
+					
+					
 
 				}
-//				 else {
-//				 message = "Simulation pausiert";
-//				 sim.pause()
-//				 startButton.setText("Start");
-//				 running = false;
-//				 }
+				 else {
+				 message = "Simualtion pausiert";
+				 sim.interrupt();
+				 startButton.setText("Start");
+				 running = false;
+				
+				 }
+
 
 				System.out.println(message);
 				txtpnConsole.setText(message);
@@ -471,7 +497,7 @@ public class Application {
 				while (true) {
 
 					try {
-						this.sleep(updateRate);
+				this.sleep(updateRate);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -479,7 +505,7 @@ public class Application {
 					
 					serverAuslastung.setValue((int) (plotDataListener
 							.getCurrentServerUtilization() * 100));
-					next = plotDataListener.getCurrentNbrOfClientsInQueue();
+					next  = plotDataListener.getCurrentNbrOfClientsInQueue();
 					canvas.repaint();
 				}
 			}
