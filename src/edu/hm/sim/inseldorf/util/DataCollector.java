@@ -125,9 +125,14 @@ public class DataCollector {
 		}
 		if(cServerSize > 1) throw new RuntimeException("Server can not process more than 1 client at a time");
 		avgQueueSize += cQueueSize * delta;
-<<<<<<< HEAD
+
+<<<<
 		
 		avgServerLoad += cServerSize * delta;
+=======
+		avgServerLoad =  cServerSize * delta;
+		  
+>>>>>>> origin/master
 =======
 		avgServerLoad =  cServerSize * delta;
 		  
