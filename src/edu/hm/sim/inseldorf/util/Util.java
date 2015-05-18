@@ -3,7 +3,10 @@ package edu.hm.sim.inseldorf.util;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
+
+import edu.hm.sim.inseldorf.util.DataCollector.DataCollectorEntry;
 /**
  * Die Klasse erzeugt exponentialverteilte Zufallszahl.
  * @author Klas, Kabiolskij, Buecherl, Ronzcka.
@@ -28,11 +31,11 @@ public class Util {
 	 * @param data, array aus dem die daten gelesen werden.
 	 * @throws IOException.
 	 */
-	public static void write (String s, double[] data) throws IOException{
+	public static void write (String s, ArrayList<DataCollectorEntry> list) throws IOException{
 		BufferedWriter outputWriter = null;
 		outputWriter = new BufferedWriter(new FileWriter(s));
-		for (int i = 0; i < data.length; i++) {
-		    outputWriter.write(Double.toString(data[i])+",");
+		for (int i = 0; i < list.size(); i++) {
+		    outputWriter.write(list.get(i).toString());
 		}
 		outputWriter.flush();  
 		outputWriter.close();  

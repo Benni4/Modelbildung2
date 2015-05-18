@@ -1,5 +1,6 @@
 package edu.hm.sim.inseldorf.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -13,6 +14,7 @@ import edu.hm.sim.inseldorf.model.Event.EventFactory;
 import edu.hm.sim.inseldorf.util.DataCollector;
 import edu.hm.sim.inseldorf.util.EventListener;
 import edu.hm.sim.inseldorf.util.Pool;
+import edu.hm.sim.inseldorf.util.Util;
 
 public class Simulation extends Thread {
 	public static Pool<Client> ClientPool = new Pool<Client>(new ClientFactory());
@@ -70,6 +72,9 @@ public class Simulation extends Thread {
 		try {
 			while(true) {
 				generateClient();
+				//Mathematica Export
+				collector.collect();
+				collector.exportData();
 				processEventsUntil(currentSpawnTime);
 
 				if(secondsPerMillisecond > 0) {
@@ -83,7 +88,7 @@ public class Simulation extends Thread {
 					}
 				}
 			}
-		} catch(InterruptedException e) {
+		} catch(InterruptedException | IOException e) {
 			// paused
 		}
 	}

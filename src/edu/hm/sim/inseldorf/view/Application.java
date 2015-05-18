@@ -481,12 +481,10 @@ public class Application {
 							.getCurrentServerUtilization() * 100));
 					next = plotDataListener.getCurrentNbrOfClientsInQueue();
 					canvas.repaint();
-
 				}
 			}
 
 		};
-
 		thread.start();
 
 	}
