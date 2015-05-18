@@ -3,6 +3,8 @@ package edu.hm.sim.inseldorf.util;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.sun.org.apache.bcel.internal.generic.CPInstruction;
+
 import edu.hm.sim.inseldorf.controller.Simulation;
 import edu.hm.sim.inseldorf.model.Client;
 import edu.hm.sim.inseldorf.model.Event;
@@ -86,6 +88,16 @@ public class DataCollector {
 	public void addListener(EventListener ev) {
 		listeners.add(ev);
 	}
+	
+	public int getCQueueSize(){
+		
+		return cQueueSize;
+	}
+	
+	
+
+	
+	
 
 	public void process(Event event) {
 		double delta = event.time - lastEvent;
@@ -113,7 +125,13 @@ public class DataCollector {
 		}
 		if(cServerSize > 1) throw new RuntimeException("Server can not process more than 1 client at a time");
 		avgQueueSize += cQueueSize * delta;
+<<<<<<< HEAD
+		
 		avgServerLoad += cServerSize * delta;
+=======
+		avgServerLoad =  cServerSize * delta;
+		  
+>>>>>>> origin/master
 		avgNumberOfClients += cNumberOfClients * delta;
 
 		switch(event.type) {
