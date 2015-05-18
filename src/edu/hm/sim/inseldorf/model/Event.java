@@ -10,6 +10,7 @@ public class Event extends Poolable implements Comparable<Event> {
 			return new Event();
 		}
 	}
+	public final static int UNDEF = 0x00;
 	public final static int AT_SPAWN = 0x01;
 	public final static int AT_SERVER = 0x02;
 	public final static int AT_FINISH = 0x03;
@@ -36,5 +37,8 @@ public class Event extends Poolable implements Comparable<Event> {
 	}
 
 	@Override
-	public void destroy() { }
+	public void destroy() {
+		client = null;
+		time = type = 0;
+	}
 }

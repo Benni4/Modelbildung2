@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 
-import com.apple.eawt.Application;
-
 import edu.hm.sim.inseldorf.model.Client;
 import edu.hm.sim.inseldorf.model.Client.ClientFactory;
 import edu.hm.sim.inseldorf.model.Event;
@@ -54,6 +52,7 @@ public class Simulation extends Thread {
 			Event ev = it.next();
 			if(ev.time < time) {
 				collector.process(ev);
+				EventPool.free(ev);
 				it.remove();
 			}
 		}
