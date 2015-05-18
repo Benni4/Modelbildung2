@@ -1,7 +1,12 @@
 package edu.hm.sim.inseldorf.util;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import com.sun.media.jfxmedia.events.NewFrameEvent;
+import com.sun.org.apache.bcel.internal.generic.CPInstruction;
+
 
 import edu.hm.sim.inseldorf.controller.Simulation;
 import edu.hm.sim.inseldorf.model.Client;
@@ -13,11 +18,17 @@ public class DataCollector {
 	private ArrayList<Double> queueTimes = new ArrayList<>();
 	private ArrayList<EventListener> listeners = new ArrayList<>();
 	private Simulation simulation;
-
+	
 	private double lastEvent = 0;
 
 	private int cNumberOfClients;
 	private int cQueueSize;
+
+	public int getcServerSize() {
+		return cServerSize;
+	}
+
+
 	private int cServerSize;
 
 	private int cClientSpawnTime = 0;
@@ -29,7 +40,67 @@ public class DataCollector {
 	private double avgClientWaitTime = 0;
 	private double avgClientProcessTime = 0;
 	private double avgNumberOfClients = 0;
+	
+	
+	//Mathematica export start
+	private ArrayList<DataCollectorEntry> aQueueLength = new ArrayList<DataCollector.DataCollectorEntry>();
+	private ArrayList<DataCollectorEntry> aClientsNumber = new ArrayList<DataCollector.DataCollectorEntry>();
+	private ArrayList<DataCollectorEntry> aWaitTime = new ArrayList<DataCollector.DataCollectorEntry>();
+	private ArrayList<DataCollectorEntry> aAtShopTime = new ArrayList<DataCollector.DataCollectorEntry>();
+	private ArrayList<DataCollectorEntry> aServerLoad = new ArrayList<DataCollector.DataCollectorEntry>();
+	
+	public ArrayList<DataCollectorEntry> getaQueueLength() {
+		return aQueueLength;
+	}
+	public ArrayList<DataCollectorEntry> getaClientsNumber() {
+		return aClientsNumber;
+	}
+	public ArrayList<DataCollectorEntry> getaWaitTime() {
+		return aWaitTime;
+	}
+	public ArrayList<DataCollectorEntry> getaAtShopTime() {
+		return aAtShopTime;
+	}
+	public ArrayList<DataCollectorEntry> getaServerLoad() {
+		return aServerLoad;
+	}
+	private void addQ() {
+		aQueueLength.add(new DataCollectorEntry(this.averageQueueSize()));
+	}
+	private void addClients() {
+		aClientsNumber.add(new DataCollectorEntry(this.averageNumberOfClients()));
+	}
+	private void addWait() {
+		aWaitTime.add(new DataCollectorEntry(this.averageClientWaitTime()));
+	}
+	private void addShop() {
+		aAtShopTime.add(new DataCollectorEntry(this.averageClientInShopTime()));
+	}
+	private void addServer() {
+		aServerLoad.add(new DataCollectorEntry(this.averageServerLoad()));
+	}
+	
+	public void collect() {
+		this.addClients();
+		this.addQ();
+		this.addServer();
+		this.addShop();
+		this.addWait();
+	}
 
+	/**
+	 * Exportiert Daten für Mathematica
+	 * @throws IOException
+	 */
+	public void exportData() throws IOException {
+		Util.write("schlangenLaengen.txt", aQueueLength);
+		Util.write("kundenanzahl.txt", aClientsNumber);
+		Util.write("anstehzeiten", aWaitTime);
+		Util.write("verweildauer.txt", aAtShopTime);
+		Util.write("auslastung.txt", aServerLoad);
+	}
+	//Mathematica export end
+	
 	public DataCollector(Simulation sim) {
 		simulation = sim;
 	}
@@ -155,4 +226,20 @@ public class DataCollector {
 			el.notify(this, event);
 		}
 	}
+	
+
+	public class DataCollectorEntry{
+		double time;
+		double data;
+		
+		public DataCollectorEntry(double data) {
+			time = time();
+			this.data = data;
+		}
+		
+		public String toString(){
+			return  time + "," + data + "\n";
+		}
+	}
+	
 }
