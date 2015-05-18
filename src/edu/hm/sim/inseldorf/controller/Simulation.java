@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 
+import com.apple.eawt.Application;
+
 import edu.hm.sim.inseldorf.model.Client;
 import edu.hm.sim.inseldorf.model.Client.ClientFactory;
 import edu.hm.sim.inseldorf.model.Event;

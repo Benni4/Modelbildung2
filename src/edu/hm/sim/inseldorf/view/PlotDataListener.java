@@ -70,8 +70,8 @@ public class PlotDataListener implements EventListener {
 
 	@Override
 	public void notify(DataCollector col, Event ev) {
-
-		currentServerUtilization = col.averageServerLoad();
+		//Hier noch mal!!!
+		currentServerUtilization = col.getcServerSize();
 		currentNbrOfClientsInQueue = col.getCQueueSize();
 
 		double time = col.time();
@@ -79,7 +79,7 @@ public class PlotDataListener implements EventListener {
 		mdlAmountOfCountersToTime.add(time, col.averageNumberOfClients());
 		mdlWaitingTimeToTime.add(time, col.averageClientWaitTime());
 		mdlTimeInShopToTime.add(time, col.averageClientInShopTime());
-		mdlServerUtilizationToTime.add(time, col.averageServerLoad());
+		mdlServerUtilizationToTime.add(time, col.averageServerLoad()*100);
 
 	}
 

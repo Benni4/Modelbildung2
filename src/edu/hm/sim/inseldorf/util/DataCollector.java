@@ -20,6 +20,15 @@ public class DataCollector {
 
 	private int cNumberOfClients;
 	private int cQueueSize;
+	public int getcServerSize() {
+		return cServerSize;
+	}
+
+
+
+
+
+
 	private int cServerSize;
 
 	private int cClientSpawnTime = 0;
@@ -54,7 +63,7 @@ public class DataCollector {
 	}
 
 	public double time() {
-		return lastEvent/3600;
+		return lastEvent;
 	}
 
 	public double averageQueueSize() {
@@ -66,7 +75,8 @@ public class DataCollector {
 	}
 
 	public double averageServerLoad() {
-		return avgServerLoad / lastEvent;
+		//return avgServerLoad / lastEvent;
+		return avgClientProcessTime/lastEvent;
 	}
 
 	public double averageClientSpawnTime() {
@@ -126,17 +136,11 @@ public class DataCollector {
 		if(cServerSize > 1) throw new RuntimeException("Server can not process more than 1 client at a time");
 		avgQueueSize += cQueueSize * delta;
 
-<<<<
+
 		
 		avgServerLoad += cServerSize * delta;
-=======
-		avgServerLoad =  cServerSize * delta;
-		  
->>>>>>> origin/master
-=======
-		avgServerLoad =  cServerSize * delta;
-		  
->>>>>>> origin/master
+
+
 		avgNumberOfClients += cNumberOfClients * delta;
 
 		switch(event.type) {
