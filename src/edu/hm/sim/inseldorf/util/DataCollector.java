@@ -1,12 +1,13 @@
 package edu.hm.sim.inseldorf.util;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 import com.sun.media.jfxmedia.events.NewFrameEvent;
 import com.sun.org.apache.bcel.internal.generic.CPInstruction;
-
 
 import edu.hm.sim.inseldorf.controller.Simulation;
 import edu.hm.sim.inseldorf.model.Client;
@@ -23,14 +24,7 @@ public class DataCollector {
 
 	private int cNumberOfClients;
 	private int cQueueSize;
-
-	public int getcServerSize() {
-		return cServerSize;
-	}
-
-
 	private int cServerSize;
-
 	private int cClientSpawnTime = 0;
 	private int cClientWaitTime = 0;
 	private int cClientProcessTime = 0;
@@ -231,6 +225,8 @@ public class DataCollector {
 	public class DataCollectorEntry{
 		double time;
 		double data;
+		NumberFormat formatter = new DecimalFormat("#0.0000000000000000");     
+
 		
 		public DataCollectorEntry(double data) {
 			time = time();
@@ -238,7 +234,7 @@ public class DataCollector {
 		}
 		
 		public String toString(){
-			return  time + "," + data + "\n";
+			return  time + ";" + formatter.format(data).replace(',', '.') + "\n";
 		}
 	}
 	

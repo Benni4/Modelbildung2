@@ -79,8 +79,6 @@ public class Simulation extends Thread {
 			while(true) {
 				generateClient();
 				//Mathematica Export
-				collector.collect();
-				collector.exportData();
 				processEventsUntil(currentSpawnTime);
 
 				if(secondsPerMillisecond > 0) {
@@ -89,6 +87,8 @@ public class Simulation extends Thread {
 					int deltams = deltans/1000000;
 					deltans -= deltams * 1000000;
 					lastSpawnTime = currentSpawnTime;
+					collector.collect();
+					collector.exportData();
 					if(deltams > 0 || deltans > 0) {
 						Thread.sleep(deltams, deltans);
 					}
