@@ -6,9 +6,6 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import com.sun.media.jfxmedia.events.NewFrameEvent;
-import com.sun.org.apache.bcel.internal.generic.CPInstruction;
-
 import edu.hm.sim.inseldorf.controller.Simulation;
 import edu.hm.sim.inseldorf.model.Client;
 import edu.hm.sim.inseldorf.model.Event;
