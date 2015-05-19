@@ -34,7 +34,7 @@ public class Util {
 	public static void write (String s, ArrayList<DataCollectorEntry> list) throws IOException{
 		BufferedWriter outputWriter = null;
 		outputWriter = new BufferedWriter(new FileWriter(s));
-		outputWriter.write("0;0 \n");
+		outputWriter.write("{0,0}");
 		for (int i = 1; i < list.size(); i++) {
 		    outputWriter.write(list.get(i).toString());
 		}

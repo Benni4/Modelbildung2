@@ -21,6 +21,16 @@ public class Simulation extends Thread {
 	public int lambdaSpawn;
 	public int lambdaProcess;
 	public int currentID = 0;
+	
+	
+
+	public int getLambdaSpawn() {
+		return lambdaSpawn;
+	}
+
+	public int getLambdaProcess() {
+		return lambdaProcess;
+	}
 
 	public double currentSpawnTime = 0;
 	public double lastSpawnTime = 0;
@@ -87,8 +97,10 @@ public class Simulation extends Thread {
 					int deltams = deltans/1000000;
 					deltans -= deltams * 1000000;
 					lastSpawnTime = currentSpawnTime;
+					
 					collector.collect();
 					collector.exportData();
+					
 					if(deltams > 0 || deltans > 0) {
 						Thread.sleep(deltams, deltans);
 					}

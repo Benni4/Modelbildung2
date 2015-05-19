@@ -87,11 +87,11 @@ public class DataCollector {
 	 * @throws IOException
 	 */
 	public void exportData() throws IOException {
-		Util.write("schlangenLaengen.txt", aQueueLength);
-		Util.write("kundenanzahl.txt", aClientsNumber);
-		Util.write("anstehzeiten", aWaitTime);
-		Util.write("verweildauer.txt", aAtShopTime);
-		Util.write("auslastung.txt", aServerLoad);
+		Util.write(simulation.getLambdaSpawn()+"_"+simulation.getLambdaProcess()+"_"+"schlangenLaengen.txt", aQueueLength);
+		Util.write(simulation.getLambdaSpawn()+"_"+simulation.getLambdaProcess()+"_"+"kundenanzahl.txt", aClientsNumber);
+		Util.write(simulation.getLambdaSpawn()+"_"+simulation.getLambdaProcess()+"_"+"anstehzeiten", aWaitTime);
+		Util.write(simulation.getLambdaSpawn()+"_"+simulation.getLambdaProcess()+"_"+"verweildauer.txt", aAtShopTime);
+		Util.write(simulation.getLambdaSpawn()+"_"+simulation.getLambdaProcess()+"_"+"auslastung.txt", aServerLoad);
 	}
 	//Mathematica export end
 	
@@ -234,7 +234,7 @@ public class DataCollector {
 		}
 		
 		public String toString(){
-			return  time + ";" + formatter.format(data).replace(',', '.') + "\n";
+			return  ",\n{" + time + "," + formatter.format(data).replace(',' , '.') + "}";
 		}
 	}
 	
