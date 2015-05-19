@@ -260,8 +260,8 @@ public class Application {
 
 				String message = "";
 
-				if (!running) {
-					if(sim == null){
+				if (!running && sim == null) {
+					
 					
 					if (spVal == 0 || spVal_1 == 0) {
 
@@ -275,11 +275,10 @@ public class Application {
 					plotDataListener = new PlotDataListener();
 					sim.addListener(plotDataListener);
 					sim.start();
+					
 					updateGUI();
-					}
-					else{
-						sim.interrupt();
-					}
+				
+					
 						
 					startButton.setText("Pause");
 					running = true;
@@ -290,13 +289,13 @@ public class Application {
 				 else {
 				 message = "Simualtion pausiert";
 				 sim.interrupt();
+				 
 				 startButton.setText("Start");
 				 running = false;
 				
 				 }
 
 
-				System.out.println(message);
 				txtpnConsole.setText(message);
 
 			}
@@ -315,11 +314,18 @@ public class Application {
 
 				String message = "Simulation gestoppt";
 
+				
+				if(sim!= null){
+				sim.interrupt();
+				sim = null;
 				startButton.setText("Start");
 				running = false;
+				toPlot = defaultToPlot;
+				updateXY();
 
 				txtpnConsole.setText(message);
-				System.out.println(message);
+			
+				}
 			}
 
 		});
@@ -507,6 +513,11 @@ public class Application {
 							.getCurrentServerUtilization() * 100));
 					next  = plotDataListener.getCurrentNbrOfClientsInQueue();
 					canvas.repaint();
+
+					int spm = (int)slider.getValue();
+					int lambdaSpawn = (int)spinner.getValue();
+					int lambdaProcess = (int)spinner_1.getValue();
+
 				}
 			}
 
@@ -575,6 +586,7 @@ public class Application {
 			break;
 
 		default:
+			chartPanel.setChart((JFreeChart)null);
 			break;
 		}
 

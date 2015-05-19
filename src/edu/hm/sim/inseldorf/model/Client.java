@@ -24,7 +24,16 @@ public class Client extends Poolable {
 	public void _init(Simulation sim) {
 		id = sim.currentID++;
 
+		
+		if(sim.spawnSeed ==0 || sim.processSeed==0){
 		deltaSpawn = Util.expNumber(sim.lambdaSpawn);
+		deltaProcess = Util.expNumber(sim.lambdaProcess);
+		}
+		else{
+			deltaSpawn = Util.expNumber(sim.lambdaSpawn,sim.spawnSeed);
+			deltaProcess = Util.expNumber(sim.lambdaProcess,sim.processSeed);
+		}
+		
 		atSpawn = (sim.currentSpawnTime += deltaSpawn);
 		sim.addEvent(Simulation.EventPool.alloc(this, Event.AT_SPAWN, atSpawn));
 
@@ -32,7 +41,7 @@ public class Client extends Poolable {
 		atServer = atSpawn + deltaQueue;
 		sim.addEvent(Simulation.EventPool.alloc(this, Event.AT_SERVER, atServer));
 
-		deltaProcess = Util.expNumber(sim.lambdaProcess);
+		
 		atFinish = (sim.serverBusyTill = atServer + deltaProcess);
 		sim.addEvent(Simulation.EventPool.alloc(this, Event.AT_FINISH, atFinish));
 	}

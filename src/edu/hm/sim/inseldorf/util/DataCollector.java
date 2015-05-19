@@ -24,6 +24,9 @@ public class DataCollector {
 
 	private int cNumberOfClients;
 	private int cQueueSize;
+
+
+
 	private int cServerSize;
 	private int cClientSpawnTime = 0;
 	private int cClientWaitTime = 0;
