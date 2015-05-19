@@ -49,16 +49,6 @@ public class Simulation extends Thread {
 
 	public int lambdaProcess;
 	public int currentID = 0;
-	
-	
-
-	public int getLambdaSpawn() {
-		return lambdaSpawn;
-	}
-
-	public int getLambdaProcess() {
-		return lambdaProcess;
-	}
 
 	public double currentSpawnTime = 0;
 	public double lastSpawnTime = 0;
