@@ -275,7 +275,7 @@ public class Application {
 					plotDataListener = new PlotDataListener();
 					sim.addListener(plotDataListener);
 					sim.start();
-					
+					updateXY();
 					updateGUI();
 				
 					
