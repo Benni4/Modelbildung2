@@ -18,7 +18,7 @@ public class DataCollector {
 	private ArrayList<Double> processTimes = new ArrayList<>();
 	private ArrayList<Double> queueTimes = new ArrayList<>();
 	private ArrayList<EventListener> listeners = new ArrayList<>();
-	private Simulation simulation;
+	public Simulation simulation;
 	
 	private double lastEvent = 0;
 
